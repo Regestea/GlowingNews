@@ -1,0 +1,74 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.4.33213.308
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Services", "Services", "{E062B37C-5DEB-4163-82F5-9C5EF0B3251E}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "IdentityServer", "IdentityServer", "{97955AD8-6A89-47D4-834A-B77D856EEACA}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "AWS", "AWS", "{BC71CDAB-DA7B-4245-8906-4A81615B1B4D}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "News", "News", "{3CAE8187-4265-4A30-A43D-1C868B034E15}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GlowingNews.AWS", "Services\AWS\GlowingNews.AWS\GlowingNews.AWS.csproj", "{C2E53743-7786-4EAC-ACB2-C932FAE0B5FA}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GlowingNews.IdentityServer", "Services\IdentityServer\GlowingNews.IdentityServer\GlowingNews.IdentityServer.csproj", "{CAD98AF7-B3DF-452C-9EB0-C93C3EF61E2B}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GlowingNews.API", "Services\News\GlowingNews.API\GlowingNews.API.csproj", "{AF8682D6-17AE-42D9-962E-B7E708E356DA}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GlowingNews.Application", "Services\News\GlowingNews.Application\GlowingNews.Application.csproj", "{4F5E8AD6-C2EF-43D2-B3BF-3388324B010F}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GlowingNews.Domain", "Services\News\GlowingNews.Domain\GlowingNews.Domain.csproj", "{2F5F7B61-1BDF-4BCE-9BA6-971AA5483B78}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GlowingNews.Infrastructure", "Services\News\GlowingNews.Infrastructure\GlowingNews.Infrastructure.csproj", "{B41ADB43-D691-4F75-AD6F-B3734F4B9333}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C2E53743-7786-4EAC-ACB2-C932FAE0B5FA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C2E53743-7786-4EAC-ACB2-C932FAE0B5FA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C2E53743-7786-4EAC-ACB2-C932FAE0B5FA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C2E53743-7786-4EAC-ACB2-C932FAE0B5FA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CAD98AF7-B3DF-452C-9EB0-C93C3EF61E2B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CAD98AF7-B3DF-452C-9EB0-C93C3EF61E2B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CAD98AF7-B3DF-452C-9EB0-C93C3EF61E2B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CAD98AF7-B3DF-452C-9EB0-C93C3EF61E2B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AF8682D6-17AE-42D9-962E-B7E708E356DA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AF8682D6-17AE-42D9-962E-B7E708E356DA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AF8682D6-17AE-42D9-962E-B7E708E356DA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AF8682D6-17AE-42D9-962E-B7E708E356DA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4F5E8AD6-C2EF-43D2-B3BF-3388324B010F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4F5E8AD6-C2EF-43D2-B3BF-3388324B010F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4F5E8AD6-C2EF-43D2-B3BF-3388324B010F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4F5E8AD6-C2EF-43D2-B3BF-3388324B010F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2F5F7B61-1BDF-4BCE-9BA6-971AA5483B78}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2F5F7B61-1BDF-4BCE-9BA6-971AA5483B78}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2F5F7B61-1BDF-4BCE-9BA6-971AA5483B78}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2F5F7B61-1BDF-4BCE-9BA6-971AA5483B78}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B41ADB43-D691-4F75-AD6F-B3734F4B9333}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B41ADB43-D691-4F75-AD6F-B3734F4B9333}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B41ADB43-D691-4F75-AD6F-B3734F4B9333}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B41ADB43-D691-4F75-AD6F-B3734F4B9333}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{97955AD8-6A89-47D4-834A-B77D856EEACA} = {E062B37C-5DEB-4163-82F5-9C5EF0B3251E}
+		{BC71CDAB-DA7B-4245-8906-4A81615B1B4D} = {E062B37C-5DEB-4163-82F5-9C5EF0B3251E}
+		{3CAE8187-4265-4A30-A43D-1C868B034E15} = {E062B37C-5DEB-4163-82F5-9C5EF0B3251E}
+		{C2E53743-7786-4EAC-ACB2-C932FAE0B5FA} = {BC71CDAB-DA7B-4245-8906-4A81615B1B4D}
+		{CAD98AF7-B3DF-452C-9EB0-C93C3EF61E2B} = {97955AD8-6A89-47D4-834A-B77D856EEACA}
+		{AF8682D6-17AE-42D9-962E-B7E708E356DA} = {3CAE8187-4265-4A30-A43D-1C868B034E15}
+		{4F5E8AD6-C2EF-43D2-B3BF-3388324B010F} = {3CAE8187-4265-4A30-A43D-1C868B034E15}
+		{2F5F7B61-1BDF-4BCE-9BA6-971AA5483B78} = {3CAE8187-4265-4A30-A43D-1C868B034E15}
+		{B41ADB43-D691-4F75-AD6F-B3734F4B9333} = {3CAE8187-4265-4A30-A43D-1C868B034E15}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {5CD97D83-F99D-46F4-8A7F-32A6255940C0}
+	EndGlobalSection
+EndGlobal
