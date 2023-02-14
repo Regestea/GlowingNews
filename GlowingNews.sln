@@ -21,7 +21,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GlowingNews.Domain", "Servi
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GlowingNews.Infrastructure", "Services\News\GlowingNews.Infrastructure\GlowingNews.Infrastructure.csproj", "{B41ADB43-D691-4F75-AD6F-B3734F4B9333}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GlowingNews.IdentityServer", "Services\IdentityServer\GlowingNews.IdentityServer\GlowingNews.IdentityServer.csproj", "{DC3523F7-01B4-4941-B8B7-934267D8946F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GlowingNews.IdentityServer", "Services\IdentityServer\GlowingNews.IdentityServer\GlowingNews.IdentityServer.csproj", "{DC3523F7-01B4-4941-B8B7-934267D8946F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
