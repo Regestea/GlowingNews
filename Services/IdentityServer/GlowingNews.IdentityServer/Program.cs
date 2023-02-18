@@ -1,7 +1,11 @@
+using System.Security.Claims;
 using System.Text;
 using GlowingNews.IdentityServer.Context;
+using GlowingNews.IdentityServer.Entities;
+using GlowingNews.IdentityServer.GrpcServices;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 
@@ -70,17 +74,31 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ValidateLifetime = true,
             ValidateIssuerSigningKey = true,
             ValidIssuer = "https://localhost:7126",
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("f7e4d3d7-3045-4ae6-b9f0-a4a4670e60d7"))
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration.GetValue<string>("JWT:SecretKey") ?? throw new InvalidOperationException()))
         };
     });
 
 #endregion
 
+builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+
+#region Authorization
+
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy(Roles.Admin.ToString(), policy =>
+        policy.RequireClaim(ClaimTypes.Role, Roles.Admin.ToString()));
+    options.AddPolicy(Roles.User.ToString(), policy =>
+        policy.RequireClaim(ClaimTypes.Role, Roles.User.ToString()));
+});
+
+#endregion
 
 var app = builder.Build();
 
 app.MapGet("/", () => "Communication with gRPC endpoints must be made through a gRPC client. To learn how to create a client, visit: https://go.microsoft.com/fwlink/?linkid=2086909");
 
+app.MapGrpcService<AuthorizationGrpcService>();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
