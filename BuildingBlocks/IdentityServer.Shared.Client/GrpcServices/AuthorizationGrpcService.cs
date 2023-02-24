@@ -14,8 +14,7 @@ namespace IdentityServer.Shared.Client.GrpcServices
 
         public async Task<ValidateTokenResponse> ValidateTokenAsync(string token)
         {
-          var response =await  _authorizationGrpcService.ValidateJwtBearerTokenAsync(new ValidateTokenRequest() { Token = token });
-          return response;
+            return await _authorizationGrpcService.ValidateJwtBearerTokenAsync(new ValidateTokenRequest() { Token = token });
         }
     }
 }

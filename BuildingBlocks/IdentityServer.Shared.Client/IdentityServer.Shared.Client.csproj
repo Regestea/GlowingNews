@@ -15,12 +15,17 @@
     </PackageReference>
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Abstractions" Version="2.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="2.2.5" />
+    <PackageReference Include="Microsoft.Extensions.Caching.Redis" Version="2.2.0" />
   </ItemGroup>
 
   <ItemGroup>
     <Protobuf Include="..\..\Services\IdentityServer\GlowingNews.IdentityServer\Protos\Authorization.proto" GrpcServices="Client">
       <Link>Protos\Authorization.proto</Link>
     </Protobuf>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Repositories\Interfaces\" />
   </ItemGroup>
 
 </Project>
