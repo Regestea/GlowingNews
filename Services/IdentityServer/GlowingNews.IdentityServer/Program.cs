@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Security.Shared;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -86,10 +87,10 @@ builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
 builder.Services.AddAuthorization(options =>
 {
-    options.AddPolicy(Roles.Admin.ToString(), policy =>
-        policy.RequireClaim(ClaimTypes.Role, Roles.Admin.ToString()));
-    options.AddPolicy(Roles.User.ToString(), policy =>
-        policy.RequireClaim(ClaimTypes.Role, Roles.User.ToString()));
+    options.AddPolicy(Roles.Admin, policy =>
+        policy.RequireClaim(ClaimTypes.Role, Roles.Admin));
+    options.AddPolicy(Roles.User, policy =>
+        policy.RequireClaim(ClaimTypes.Role, Roles.User));
 });
 
 #endregion

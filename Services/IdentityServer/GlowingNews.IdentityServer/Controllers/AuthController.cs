@@ -8,6 +8,7 @@ using GlowingNews.IdentityServer.Entities;
 using GlowingNews.IdentityServer.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Filters;
+using Security.Shared;
 
 namespace GlowingNews.IdentityServer.Controllers
 {
@@ -26,18 +27,20 @@ namespace GlowingNews.IdentityServer.Controllers
 
             var signinCredentials = new SigningCredentials(secretKey, SecurityAlgorithms.HmacSha512);
 
+
             var tokenOption = new JwtSecurityToken(
                 issuer: hostUrl,
                 claims: new List<Claim>
                 {
+                    new Claim(ClaimTypes.NameIdentifier,Guid.NewGuid().ToString()),
                     new Claim(ClaimTypes.Name,model.UserName),
-                    new Claim(ClaimTypes.Role,Roles.Admin.ToString()),
-                    new Claim(ClaimTypes.Role,Roles.User.ToString())
+                    new Claim(ClaimTypes.Email,"Email@email.com"),
+                    //new Claim(ClaimTypes.Role,Roles.Admin),
+                    new Claim(ClaimTypes.Role,Roles.User)
                 },
                 expires: DateTime.Now.AddMinutes(30),
                 signingCredentials: signinCredentials
             );
-
             var tokenString = new JwtSecurityTokenHandler().WriteToken(tokenOption);
                 
 
