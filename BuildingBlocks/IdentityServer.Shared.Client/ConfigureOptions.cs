@@ -15,5 +15,7 @@ namespace IdentityServer.Shared.Client
 
         public string IdentityServerGrpcUrl { get; set; } = null!;
 
+        public string IssuerUrl { get; set; } = null!;
+
     }
 }

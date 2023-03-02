@@ -11,7 +11,7 @@ namespace IdentityServer.Shared.Client.Attributes
 
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = true, Inherited = true)]
 
-    public class AuthorizeByIdentityServer : Attribute, IAsyncActionFilter
+    public class AuthorizeByIdentityServer : ActionFilterAttribute, IAsyncActionFilter
     {
 
         private readonly string? requiredRoles;
@@ -23,6 +23,7 @@ namespace IdentityServer.Shared.Client.Attributes
 
         public async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
         {
+            
             var authorizationGrpcServices =
                 context.HttpContext.RequestServices.GetService<AuthorizationGrpcServices>() ??
                 throw new ArgumentNullException(nameof(AuthorizationGrpcServices));
@@ -59,7 +60,11 @@ namespace IdentityServer.Shared.Client.Attributes
                 return;
             }
 
-            if (requiredRoles == null) return;
+            if (requiredRoles == null)
+            {
+                await next();
+                return;
+            }
 
             //check user role for required roles
             var roleList = response.Roles.Split(",");
@@ -81,11 +86,13 @@ namespace IdentityServer.Shared.Client.Attributes
 
                 if (hasRequiredRole)
                 {
+                    await next();
                     return;
                 }
             }
 
             context.Result = new StatusCodeResult(StatusCodes.Status403Forbidden);
+            return;
         }
     }
 }
