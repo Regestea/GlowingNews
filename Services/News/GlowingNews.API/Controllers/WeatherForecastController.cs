@@ -1,3 +1,4 @@
+using IdentityServer.Shared.Client.Repositories.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GlowingNews.API.Controllers
@@ -6,28 +7,18 @@ namespace GlowingNews.API.Controllers
     [Route("[controller]")]
     public class WeatherForecastController : ControllerBase
     {
-        private static readonly string[] Summaries = new[]
-        {
-        "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-    };
+        private IJwtTokenRepository _jwtTokenRepository;
 
-        private readonly ILogger<WeatherForecastController> _logger;
-
-        public WeatherForecastController(ILogger<WeatherForecastController> logger)
+        public WeatherForecastController(IJwtTokenRepository jwtTokenRepository)
         {
-            _logger = logger;
+            _jwtTokenRepository = jwtTokenRepository;
         }
 
-        [HttpGet(Name = "GetWeatherForecast")]
-        public IEnumerable<WeatherForecast> Get()
+        [HttpPost]
+        public async Task<IActionResult> getTokenDetail([FromForm]string token)
         {
-            return Enumerable.Range(1, 5).Select(index => new WeatherForecast
-            {
-                Date = DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-                TemperatureC = Random.Shared.Next(-20, 55),
-                Summary = Summaries[Random.Shared.Next(Summaries.Length)]
-            })
-            .ToArray();
+            var aa = _jwtTokenRepository.ExtractUserDataFromToken(token);
+            return Ok(aa);
         }
     }
 }
