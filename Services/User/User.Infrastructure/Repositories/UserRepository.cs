@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using UserAccount.Application.Common.Interfaces;
 using UserAccount.Application.Common.Models;
+using UserAccount.Application.DTOs;
 using UserAccount.Domain.Entities;
 using UserAccount.Infrastructure.Persistence;
 
@@ -20,12 +21,12 @@ namespace UserAccount.Infrastructure.Repositories
             _context = context;
         }
 
-        public async Task<UserModel?> GetUserAsync(Guid userId)
+        public async Task<UserDto?> GetUserAsync(Guid userId)
         {
             var user=await _context.Users.SingleOrDefaultAsync(x => x.Id == userId);
             if (user == null) return null;
 
-            var userModel = new UserModel()
+            var userModel = new UserDto()
             {
                 Id = user.Id,
                 Name = user.Name,
@@ -37,19 +38,25 @@ namespace UserAccount.Infrastructure.Repositories
             return userModel;
         }
 
-        public async Task<Guid> CreateUserAsync(CreateUserModel userModel)
+        public async Task<Guid> CreateUserAsync(CreateUserDto userModel)
         {
             var user = new User()
             {
                 Id = userModel.Id,
                 Name = userModel.Name!,
-                Email = userModel.Email!,
-                About = userModel.About,
-                Image = userModel.Image
+                Email = userModel.Email!
             };
             await _context.Users.AddAsync(user);
             await _context.SaveChangesAsync();
             return user.Id;
+        }
+
+        public async Task EditUserAsync(Guid userId,EditUserModel userModel)
+        {
+            var user=await _context.Users.SingleAsync(x => x.Id == userId);
+            user.About=userModel.About;
+            user.ModifiedDate=DateTimeOffset.Now;
+            _context.Users.Update(user);
         }
     }
 }

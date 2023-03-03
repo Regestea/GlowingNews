@@ -1,3 +1,4 @@
+using System.Reflection;
 using System.Security.Claims;
 using System.Text;
 using GlowingNews.IdentityServer.Context;
@@ -29,6 +30,9 @@ builder.Services.AddEntityFrameworkNpgsql().AddDbContext<IdentityServerContext>(
 
 #region SwaggerConfig
 
+var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+
 builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "MyProject", Version = "v1.0.0" });
@@ -55,7 +59,7 @@ builder.Services.AddSwaggerGen(c =>
     };
 
     c.AddSecurityRequirement(securityRequirement);
-
+    c.IncludeXmlComments(xmlPath);
 });
 
 

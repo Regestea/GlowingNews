@@ -13,7 +13,7 @@ namespace UserAccount.Infrastructure.Migrations
 {
     [DbContext(typeof(UserAccountContext))]
     [Migration("20230302141731_initial")]
-    partial class initial
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
