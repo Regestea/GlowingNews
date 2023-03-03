@@ -21,7 +21,7 @@ namespace IdentityServer.Shared.Client.Attributes
             this.requiredRoles = requiredRoles;
         }
 
-        public async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
+        public override async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
         {
             
             var authorizationGrpcServices =
