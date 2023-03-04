@@ -14,6 +14,7 @@ namespace UserAccount.Infrastructure
             services.AddEntityFrameworkNpgsql().AddDbContext<UserAccountContext>(
                 o => o.UseNpgsql(configuration.GetSection("DatabaseSettings:ConnectionString").Value));
             services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<IFollowRepository, FollowRepository>();
 
             return services;
         }
