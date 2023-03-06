@@ -16,8 +16,8 @@ namespace UserAccount.API.Controllers
     [ApiController]
     public class UserController : ControllerBase
     {
-        private IUserRepository _userRepository;
-        private IJwtTokenRepository _jwtTokenRepository;
+        private readonly IUserRepository _userRepository;
+        private readonly IJwtTokenRepository _jwtTokenRepository;
 
         public UserController(IUserRepository userRepository, IJwtTokenRepository jwtTokenRepository)
         {
@@ -52,12 +52,13 @@ namespace UserAccount.API.Controllers
             return Ok(user);
         }
 
-       
+
         /// <summary>
         /// Get User profile By Id
         /// </summary>
         /// <response code="200">Success: User profile</response>
         /// <response code="404">Success: User not found</response>
+        [ProducesResponseType(typeof(UserDto), StatusCodes.Status200OK)]
         [AuthorizeByIdentityServer(Roles.User + "|" + Roles.Admin)]
         [HttpGet("{id}")]
         public async Task<IActionResult> GetUser(Guid id)

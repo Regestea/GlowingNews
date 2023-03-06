@@ -39,7 +39,7 @@ namespace IdentityServer.Shared.Client.Repositories
 
         public string GetJwtToken()
         {
-            _httpContextAccessor.HttpContext.Request.Headers.TryGetValue("Authorization", out var authorizationHeader);
+            _httpContextAccessor.HttpContext!.Request.Headers.TryGetValue("Authorization", out var authorizationHeader);
             var jwtToken = authorizationHeader.ToString().Replace("Bearer ", "");
             return jwtToken;
         }

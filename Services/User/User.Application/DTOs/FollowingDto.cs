@@ -16,6 +16,5 @@ namespace UserAccount.Application.DTOs
 
         public string? UserImage { get; set; } 
 
-        public DateTimeOffset? FollowedAt { get; set; }
     }
 }

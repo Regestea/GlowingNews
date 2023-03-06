@@ -5,8 +5,13 @@ namespace UserAccount.Domain.Entities
 {
     public class Follow
     {
+        public Follow()
+        {
+             FollowedAt = DateTimeOffset.UtcNow;
+        }
+
         [Key] 
-        public Guid Id { get; } = Guid.NewGuid();
+        public Guid Id { get; set; } 
 
         [ForeignKey("FollowerId")]
         public User Follower { get; set; } = null!;
@@ -20,6 +25,6 @@ namespace UserAccount.Domain.Entities
         [Required]
         public Guid FollowingId { get; set; }
 
-        public DateTimeOffset FollowedAt { get;  } = DateTimeOffset.UtcNow;
+        public DateTimeOffset FollowedAt { get; set; } 
     }
 }

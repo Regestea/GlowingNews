@@ -22,9 +22,9 @@ namespace UserAccount.Infrastructure.Repositories
         }
 
 
-        public async Task<List<FollowingDto>> FollowingList(Guid userId)
+        public async Task<List<FollowingDto>?> FollowingList(Guid userId)
         {
-            var followerList =await _context.Follows
+            var followerList = await _context.Follows
                 .Where(x => x.FollowingId == userId)
                 .Include(x => x.Follower)
                 .Select(x => new FollowingDto()
@@ -32,37 +32,43 @@ namespace UserAccount.Infrastructure.Repositories
                     Id = x.Id,
                     UserId = x.FollowerId,
                     UserName = x.Follower.Name,
-                    UserImage = x.Follower.Image,
-                    FollowedAt = x.FollowedAt
+                    UserImage = x.Follower.Image
                 })
                 .ToListAsync();
+
             return followerList;
         }
 
-        public async Task<List<FollowerDto>> FollowerList(Guid userId)
+        public async Task<List<FollowerDto>?> FollowerList(Guid userId)
         {
-            var followingList =await _context.Follows
+            var followingList = await _context.Follows
                 .Where(x => x.FollowerId == userId)
                 .Include(x => x.Following)
                 .Select(x => new FollowerDto()
                 {
                     Id = x.Id,
-                    UserId =x.FollowingId,
+                    UserId = x.FollowingId,
                     UserName = x.Following.Name,
                     UserImage = x.Following.Image
-                }).ToListAsync();
+                })
+                .AsSplitQuery()
+                .ToListAsync();
             return followingList;
         }
 
         public async Task Follow(Guid followerId, Guid followingId)
         {
-            var existFollowerTask = _context.Users.AnyAsync(x => x.Id == followerId);
-            var existFollowingTask = _context.Users.AnyAsync(x => x.Id == followerId);
+            var existFollow = await _context.Follows.AnyAsync(x => x.FollowerId == followerId && x.FollowingId == followingId);
+            if (existFollow) return;
 
-            var exist = await Task.WhenAll(existFollowingTask, existFollowerTask);
-            if (exist[0] && exist[1])
+            var existFollower =await _context.Users.AnyAsync(x => x.Id == followerId);
+            var existFollowing =await _context.Users.AnyAsync(x => x.Id == followingId);
+
+            
+            if (existFollower && existFollowing)
             {
-                await _context.Follows.AddAsync(new Follow() { FollowerId = followerId, FollowingId = followingId });
+                await _context.Follows.AddAsync(new Follow() { Id = Guid.NewGuid(), FollowerId = followerId, FollowingId = followingId });
+                await _context.SaveChangesAsync();
             }
         }
 
@@ -75,6 +81,7 @@ namespace UserAccount.Infrastructure.Repositories
             if (follow != null)
             {
                 _context.Follows.Remove(follow);
+                await _context.SaveChangesAsync();
             }
         }
     }
