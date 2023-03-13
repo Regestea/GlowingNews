@@ -1,4 +1,10 @@
 ﻿using GlowingNews.Infrastructure.Persistence;
+using Microsoft.EntityFrameworkCore;
+using UserAccount.Application.Common.Interfaces;
+using UserAccount.Application.Common.Models;
+using UserAccount.Application.DTOs;
+using UserAccount.Domain.Entities;
+using UserAccount.Infrastructure.Persistence;
 
 namespace GlowingNews.Infrastructure.Repositories
 {
