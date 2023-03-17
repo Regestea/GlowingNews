@@ -1,0 +1,29 @@
+syntax = "proto3";
+
+option csharp_namespace = "AWS.API.Protos";
+
+service AwsService {
+
+	rpc GetObjectPathByToken (GetObjectPathRequest) returns (GetObjectPathResponse);	  
+	rpc DeleteObjectByPath (DeleteObjectRequest) returns (DeleteObjectResponse);	  
+
+}
+
+//GetObjectPathByToken
+message GetObjectPathRequest {
+	string UserId = 1;
+    string Token = 2;
+}
+
+message GetObjectPathResponse {
+	string FilePath = 1;
+}
+
+//DeleteObjectByPath
+message DeleteObjectRequest {
+	string UserId = 1;
+	string ImagePath = 2;
+}
+
+message DeleteObjectResponse {
+}

@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using AWS.Domain.Common;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace AWS.Domain.Entities
 {
@@ -26,5 +27,7 @@ namespace AWS.Domain.Entities
         [Required]
         public string Token { get; set; } = null!;
 
+        [NotMapped]
+        public string FullPath => $"{Bucket}"+"/"+$"{FileName}";
     }
 }
