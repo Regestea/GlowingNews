@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace AWS.Application.Models
 {
-    public class FileUploadModel
+    public class ImageUploadModel
     {
         [FileSizeMegabyte(1, 5 * 1024)]
         [FileAllowedExtensions(".jpg", ".jpeg", ".png")]

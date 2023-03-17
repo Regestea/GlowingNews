@@ -28,7 +28,7 @@ namespace AWS.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<int>("BucketName")
+                    b.Property<int>("Bucket")
                         .HasColumnType("integer");
 
                     b.Property<DateTimeOffset?>("CreatedDate")

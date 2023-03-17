@@ -17,6 +17,7 @@
 
   <ItemGroup>
     <Folder Include="Common\Globals\" />
+    <Folder Include="DTOs\" />
   </ItemGroup>
 
 </Project>

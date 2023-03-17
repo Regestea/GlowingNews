@@ -2,12 +2,13 @@
 using Amazon.S3.Model;
 using Amazon.S3.Transfer;
 using AWS.Application.Common.Interfaces;
+using AWS.Application.Models;
 using AWS.Domain.Enums;
 using Microsoft.AspNetCore.Http;
 
 namespace AWS.Infrastructure.Persistence.Repositories
 {
-    public  class AwsFileRepository : IAwsFileRepository
+    public class AwsFileRepository : IAwsFileRepository
     {
         private readonly IAwsClientContext _amazonS3ClientContext;
 
@@ -17,7 +18,7 @@ namespace AWS.Infrastructure.Persistence.Repositories
         }
 
 
-        public async Task<string> UploadFileAsync(Buckets bucketCategory, IFormFile file, S3CannedACL acl, CancellationToken cancellationToken)
+        public async Task<string> UploadFileAsync(Bucket bucket, IFormFile file, S3CannedACL fileAccess, CancellationToken cancellationToken)
         {
             var key = Guid.NewGuid().ToString();
 
@@ -27,30 +28,30 @@ namespace AWS.Infrastructure.Persistence.Repositories
 
             var req = new TransferUtilityUploadRequest
             {
-                BucketName = bucketCategory.ToString(),
+                BucketName = bucket.ToString(),
                 Key = key,
                 InputStream = fileStream,
                 AutoCloseStream = false,
                 AutoResetStreamPosition = true,
-                CannedACL = acl
+                CannedACL = fileAccess
             };
 
             await fileTransferUtility.UploadAsync(req, cancellationToken);
 
-            return $"/{bucketCategory}/{key}";
+            return $"{key}";
         }
 
 
-
-        public async Task DeleteFileAsync(Buckets bucketCategory, string fileName)
+        public async Task DeleteFilesAsync(DeleteFilesModel model)
         {
-            var req = new DeleteObjectRequest()
+            var awsFilesNameList = new List<KeyVersion>();
+            foreach (var file in model.FilesName)
             {
-                BucketName = bucketCategory.ToString(),
-                Key = fileName.ToString()
-            };
-            await _amazonS3ClientContext.S3.DeleteObjectAsync(req);
+                awsFilesNameList.Add(new KeyVersion() { Key = file });
+            }
+            var requests = new DeleteObjectsRequest() { BucketName = model.Bucket.ToString(), Objects = awsFilesNameList };
+            await _amazonS3ClientContext.S3.DeleteObjectsAsync(requests);
+            
         }
-
     }
 }

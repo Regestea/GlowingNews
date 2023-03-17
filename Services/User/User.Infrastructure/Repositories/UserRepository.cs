@@ -55,8 +55,9 @@ namespace UserAccount.Infrastructure.Repositories
         {
             var user=await _context.Users.SingleAsync(x => x.Id == userId);
             user.About=userModel.About;
-            user.ModifiedDate=DateTimeOffset.Now;
+            user.ModifiedDate=DateTimeOffset.UtcNow;
             _context.Users.Update(user);
+            await _context.SaveChangesAsync();
         }
     }
 }

@@ -1,8 +1,8 @@
 ﻿namespace AWS.Domain.Enums;
 
-public enum Buckets
+public enum Bucket
 {
-    NewsImage,
-    NewsVideo,
-    Profile
+    newsimage,
+    newsvideo,
+    profile
 }

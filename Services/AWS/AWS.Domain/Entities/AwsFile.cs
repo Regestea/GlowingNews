@@ -12,7 +12,7 @@ namespace AWS.Domain.Entities
     public class AwsFile: BaseEntity
     {
         [Required]
-        public Buckets BucketName { get; set; }
+        public Bucket Bucket{ get; set; }
 
         [Required]
         public string FileName { get; set; } = null!;

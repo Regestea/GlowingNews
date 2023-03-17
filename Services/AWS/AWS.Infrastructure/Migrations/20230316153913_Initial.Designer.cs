@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace AWS.Infrastructure.Migrations
 {
     [DbContext(typeof(AwsIndexDbContext))]
-    [Migration("20230313154147_Initial")]
+    [Migration("20230316153913_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -31,7 +31,7 @@ namespace AWS.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<int>("BucketName")
+                    b.Property<int>("Bucket")
                         .HasColumnType("integer");
 
                     b.Property<DateTimeOffset?>("CreatedDate")
