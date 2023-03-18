@@ -24,7 +24,7 @@ var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
 
 builder.Services.AddSwaggerGen(c =>
 {
-    c.SwaggerDoc("v1", new OpenApiInfo { Title = "MyProject", Version = "v1.0.0" });
+    c.SwaggerDoc("v1", new OpenApiInfo { Title = "AWS", Version = "v1.0.0" });
     c.IncludeXmlComments(xmlPath);
     var securitySchema = new OpenApiSecurityScheme
     {
