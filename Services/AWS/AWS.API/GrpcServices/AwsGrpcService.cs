@@ -34,7 +34,7 @@ namespace AWS.API.GrpcServices
         public override async Task<DeleteObjectResponse> DeleteObjectByPath(DeleteObjectRequest request, ServerCallContext context)
         {
             Guid userId = Guid.Parse(request.UserId);
-            var awsFile = await _awsIndexDbContext.AwsFiles.FirstOrDefaultAsync(x=>x.FullPath==request.ImagePath&&x.UserId==userId);
+            var awsFile = await _awsIndexDbContext.AwsFiles.FirstOrDefaultAsync(x=>x.FullPath==request.FilePath&&x.UserId==userId);
             if (awsFile != null)
             {
                 awsFile.HaveUse=false;

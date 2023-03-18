@@ -22,7 +22,7 @@ message GetObjectPathResponse {
 //DeleteObjectByPath
 message DeleteObjectRequest {
 	string UserId = 1;
-	string ImagePath = 2;
+	string FilePath = 2;
 }
 
 message DeleteObjectResponse {
