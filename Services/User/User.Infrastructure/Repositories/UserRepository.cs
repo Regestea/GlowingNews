@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using AWS.Shared.Client.GrpcServices;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using UserAccount.Application.Common.Interfaces;
 using UserAccount.Application.Common.Models;
 using UserAccount.Application.DTOs;
@@ -15,10 +17,12 @@ namespace UserAccount.Infrastructure.Repositories
     public class UserRepository: IUserRepository
     {
         private UserAccountContext _context;
+        private AwsGrpcService _awsGrpcService;
 
-        public UserRepository(UserAccountContext context)
+        public UserRepository(UserAccountContext context, AwsGrpcService awsGrpcService)
         {
             _context = context;
+            _awsGrpcService = awsGrpcService;
         }
 
         public async Task<UserDto?> GetUserAsync(Guid userId)
@@ -54,7 +58,26 @@ namespace UserAccount.Infrastructure.Repositories
         public async Task EditUserAsync(Guid userId,EditUserModel userModel)
         {
             var user=await _context.Users.SingleAsync(x => x.Id == userId);
-            user.About=userModel.About;
+            if (userModel.ProfileImageToken !=null)
+            {
+                var imagePath =await _awsGrpcService.GetObjectPathAsync(userId, userModel.ProfileImageToken);
+
+                if (!imagePath.IsNullOrEmpty())
+                {
+                    if (user.Image != null)
+                    {
+                        await _awsGrpcService.DeleteObjectAsync(userId, user.Image);
+                    }
+
+                    user.Image = imagePath;
+                }
+            }
+
+            if (userModel.About !=null)
+            {
+                user.About = userModel.About;
+            }
+            
             user.ModifiedDate=DateTimeOffset.UtcNow;
             _context.Users.Update(user);
             await _context.SaveChangesAsync();

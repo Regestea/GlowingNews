@@ -6,6 +6,9 @@ namespace UserAccount.Application.Common.Models
     {
         [MaxLength(100)]
         public string? About { get; set; }
+
+        [MaxLength(100)] 
+        public string? ProfileImageToken { get; set; }
         
     }
 }

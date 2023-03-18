@@ -1,6 +1,7 @@
 using IdentityServer.Shared.Client;
 using Microsoft.OpenApi.Models;
 using System.Reflection;
+using AWS.Shared.Client;
 using UserAccount.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -13,6 +14,11 @@ builder.Services.AddIdentityServerClientServices(options =>
     options.RedisInstanceName = builder.Configuration.GetSection("Redis:InstanceName").Value ?? throw new NullReferenceException();
     options.IssuerUrl = builder.Configuration.GetSection("Issuer:Url").Value ?? throw new NullReferenceException();
 });
+builder.Services.AddAwsClientServices(options =>
+{
+    options.AwsGrpcUrl = builder.Configuration.GetSection("AwsServer:GrpcUrl").Value ?? throw new NullReferenceException();
+});
+
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();

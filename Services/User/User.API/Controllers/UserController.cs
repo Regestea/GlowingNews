@@ -1,4 +1,5 @@
-﻿using IdentityServer.Shared.Client.Attributes;
+﻿using AWS.Shared.Client.Extensions;
+using IdentityServer.Shared.Client.Attributes;
 using IdentityServer.Shared.Client.Repositories;
 using IdentityServer.Shared.Client.Repositories.Interfaces;
 using Microsoft.AspNetCore.Http;
@@ -49,6 +50,12 @@ namespace UserAccount.API.Controllers
                 });
                 user = await _userRepository.GetUserAsync(userDto.Id);
             }
+            if (user.Image != null)
+            {
+                var imageUrl = AwsFileUrl.GetUrl(user.Image);
+                user.Image = imageUrl;
+            }
+
             return Ok(user);
         }
 
