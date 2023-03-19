@@ -6,7 +6,7 @@ namespace AWS.Application.Models
 {
     public class ImageUploadModel
     {
-        [FileSizeMegabyte(1, 5 * 1024)]
+        [FileSizeMegabyte(0.1, 15)]
         [FileAllowedExtensions(".jpg", ".jpeg", ".png")]
         [Required]
         public IFormFile Image { get; set; } = null!;

@@ -6,9 +6,11 @@ namespace AWS.Application.Common.Filters
     [AttributeUsage(AttributeTargets.Property)]
     public class FileSizeMegabyteAttribute : ValidationAttribute
     {
-        private readonly int _maxFileSize;
-        private readonly int _minFileSize;
-        public FileSizeMegabyteAttribute(int minFileSize, int maxFileSize)
+        private readonly double _minFileSize;
+        private readonly double _maxFileSize;
+
+
+        public FileSizeMegabyteAttribute(double minFileSize, double maxFileSize)
         {
             _minFileSize = minFileSize;
             _maxFileSize = maxFileSize;
