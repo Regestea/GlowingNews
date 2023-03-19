@@ -25,10 +25,10 @@ namespace AWS.API.GrpcServices
                 awsFile.Token = "";
                 _awsIndexDbContext.AwsFiles.Update(awsFile);
                 await _awsIndexDbContext.SaveChangesAsync();
-                return new GetObjectPathResponse() { FilePath = awsFile.FullPath };
+                return new GetObjectPathResponse() { FilePath = awsFile.FullPath,FileFormat = awsFile.FileFormat};
             }
 
-            return new GetObjectPathResponse() { FilePath = "" };
+            return new GetObjectPathResponse() { FilePath = "",FileFormat = ""};
         }
 
         public override async Task<DeleteObjectResponse> DeleteObjectByPath(DeleteObjectRequest request, ServerCallContext context)

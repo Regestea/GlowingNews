@@ -42,6 +42,12 @@ namespace AWS.API.Controllers
 
             string imageName=await _awsFileRepository.UploadFileAsync(Bucket.profile, imageUploadModel.Image, S3CannedACL.PublicRead, CancellationToken.None);
 
+            // get the file extension including the dot (e.g. ".jpg")
+            string fileExtension = Path.GetExtension(imageUploadModel.Image.FileName);
+
+            // remove the dot from the file extension (e.g. "jpg")
+            string fileFormat = fileExtension.Substring(1);
+
             var awsFile = new AwsFile()
             {
                 Id = Guid.NewGuid(),
@@ -49,6 +55,7 @@ namespace AWS.API.Controllers
                 Bucket = Bucket.profile,
                 CreatedDate = DateTimeOffset.UtcNow,
                 HaveUse = false,
+                FileFormat = fileFormat,
                 Token = TokenGenerator.GenerateNewRngCrypto(),
                 UserId = userDto.Id
             };
@@ -73,6 +80,12 @@ namespace AWS.API.Controllers
 
             string imageName = await _awsFileRepository.UploadFileAsync(Bucket.newsimage, imageUploadModel.Image, S3CannedACL.PublicRead, CancellationToken.None);
 
+            // get the file extension including the dot (e.g. ".jpg")
+            string fileExtension = Path.GetExtension(imageUploadModel.Image.FileName);
+
+            // remove the dot from the file extension (e.g. "jpg")
+            string fileFormat = fileExtension.Substring(1);
+
             var awsFile = new AwsFile()
             {
                 Id = Guid.NewGuid(),
@@ -80,6 +93,7 @@ namespace AWS.API.Controllers
                 Bucket = Bucket.newsimage,
                 CreatedDate = DateTimeOffset.UtcNow,
                 HaveUse = false,
+                FileFormat = fileFormat,
                 Token = TokenGenerator.GenerateNewRngCrypto(),
                 UserId = userDto.Id
             };
@@ -104,6 +118,12 @@ namespace AWS.API.Controllers
 
             string videoName = await _awsFileRepository.UploadFileAsync(Bucket.newsvideo, videoUploadModel.Video, S3CannedACL.PublicRead, CancellationToken.None);
 
+            // get the file extension including the dot (e.g. ".jpg")
+            string fileExtension = Path.GetExtension(videoUploadModel.Video.FileName);
+
+            // remove the dot from the file extension (e.g. "jpg")
+            string fileFormat = fileExtension.Substring(1);
+
             var awsFile = new AwsFile()
             {
                 Id = Guid.NewGuid(),
@@ -111,6 +131,7 @@ namespace AWS.API.Controllers
                 Bucket = Bucket.newsvideo,
                 CreatedDate = DateTimeOffset.UtcNow,
                 HaveUse = false,
+                FileFormat = fileFormat,
                 Token = TokenGenerator.GenerateNewRngCrypto(),
                 UserId = userDto.Id
             };

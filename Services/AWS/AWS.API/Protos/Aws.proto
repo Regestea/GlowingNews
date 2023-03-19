@@ -17,6 +17,7 @@ message GetObjectPathRequest {
 
 message GetObjectPathResponse {
 	string FilePath = 1;
+	string FileFormat = 2;
 }
 
 //DeleteObjectByPath

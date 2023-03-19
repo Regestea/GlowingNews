@@ -16,7 +16,7 @@ namespace AWS.Shared.Client.GrpcServices
             _awsGrpcService = awsGrpcService;
         }
 
-        public async Task<string> GetObjectPathAsync(Guid userId, string token)
+        public async Task<GetObjectPathResponse> GetObjectPathAsync(Guid userId, string token)
         {
             var request = new GetObjectPathRequest()
             {
@@ -24,7 +24,7 @@ namespace AWS.Shared.Client.GrpcServices
                 UserId = userId.ToString()
             };
             var response = await _awsGrpcService.GetObjectPathByTokenAsync(request);
-            return response.FilePath;
+            return response;
         }
 
         public async Task DeleteObjectAsync(Guid userId, string filePath)

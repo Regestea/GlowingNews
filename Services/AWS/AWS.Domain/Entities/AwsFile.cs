@@ -16,6 +16,9 @@ namespace AWS.Domain.Entities
         public Bucket Bucket{ get; set; }
 
         [Required]
+        public string FileFormat { get; set; } = null!;
+
+        [Required]
         public string FileName { get; set; } = null!;
 
         [Required]
