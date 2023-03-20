@@ -62,14 +62,14 @@ namespace UserAccount.Infrastructure.Repositories
             {
                 var imagePath =await _awsGrpcService.GetObjectPathAsync(userId, userModel.ProfileImageToken);
 
-                if (!imagePath.IsNullOrEmpty())
+                if (!imagePath.FilePath.IsNullOrEmpty())
                 {
                     if (user.Image != null)
                     {
                         await _awsGrpcService.DeleteObjectAsync(userId, user.Image);
                     }
 
-                    user.Image = imagePath;
+                    user.Image = imagePath.FilePath;
                 }
             }
 

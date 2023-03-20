@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace GlowingNews.Application.DTOs
 {
-    public class NewDto
+    public class NewsDto
     {
         public Guid Id { get; set; }
 

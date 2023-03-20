@@ -1,4 +1,5 @@
-﻿using GlowingNews.Infrastructure.Persistence;
+﻿using GlowingNews.Application.Common.Interfaces;
+using GlowingNews.Infrastructure.Persistence;
 using GlowingNews.Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -12,8 +13,8 @@ namespace GlowingNews.Infrastructure
         {
             services.AddEntityFrameworkNpgsql().AddDbContext<NewsContext>(
                 o => o.UseNpgsql(configuration.GetSection("DatabaseSettings:ConnectionString").Value));
-         
 
+            services.AddScoped<INewsRepository, NewsRepository>();
             return services;
         }
     }

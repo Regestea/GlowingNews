@@ -1,6 +1,7 @@
 using System.Reflection;
 using System.Text;
 using AWS.Shared.Client;
+using GlowingNews.Infrastructure;
 using IdentityServer.Shared.Client;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Configuration;
@@ -9,6 +10,7 @@ using Microsoft.OpenApi.Models;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+builder.Services.AddInfrastructureServices(builder.Configuration);
 builder.Services.AddIdentityServerClientServices(options =>
 {
     options.IdentityServerGrpcUrl= builder.Configuration.GetSection("IdentityServer:GrpcUrl").Value ?? throw new NullReferenceException();

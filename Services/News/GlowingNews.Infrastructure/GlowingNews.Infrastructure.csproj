@@ -20,6 +20,7 @@
 	<ItemGroup>
 	  <ProjectReference Include="..\..\User\User.Application\UserAccount.Application.csproj" />
 	  <ProjectReference Include="..\..\User\User.Infrastructure\UserAccount.Infrastructure.csproj" />
+	  <ProjectReference Include="..\GlowingNews.Application\GlowingNews.Application.csproj" />
 	  <ProjectReference Include="..\GlowingNews.Domain\GlowingNews.Domain.csproj" />
 	</ItemGroup>
 

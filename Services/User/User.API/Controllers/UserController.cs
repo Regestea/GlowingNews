@@ -52,7 +52,7 @@ namespace UserAccount.API.Controllers
             }
             if (user.Image != null)
             {
-                var imageUrl = AwsFileUrl.GetUrl(user.Image);
+                var imageUrl = AwsFile.GetUrl(user.Image);
                 user.Image = imageUrl;
             }
 
