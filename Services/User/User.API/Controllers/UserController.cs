@@ -50,7 +50,7 @@ namespace UserAccount.API.Controllers
                 });
                 user = await _userRepository.GetUserAsync(userDto.Id);
             }
-            if (user.Image != null)
+            if (user?.Image != null)
             {
                 var imageUrl = AwsFile.GetUrl(user.Image);
                 user.Image = imageUrl;

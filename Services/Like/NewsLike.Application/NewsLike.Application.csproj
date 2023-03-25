@@ -7,17 +7,16 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="AWSSDK.S3" Version="3.7.103.35" />
-    <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.0" />
+    <Folder Include="Common\Models\" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\AWS.Domain\AWS.Domain.csproj" />
+    <PackageReference Include="FluentValidation" Version="11.5.1" />
+    <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="11.1.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Common\Globals\" />
-    <Folder Include="DTOs\" />
+    <ProjectReference Include="..\NewsLike.Domain\NewsLike.Domain.csproj" />
   </ItemGroup>
 
 </Project>
