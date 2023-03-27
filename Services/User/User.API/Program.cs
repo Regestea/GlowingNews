@@ -2,6 +2,7 @@ using IdentityServer.Shared.Client;
 using Microsoft.OpenApi.Models;
 using System.Reflection;
 using AWS.Shared.Client;
+using Configs.Shared;
 using UserAccount.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -20,39 +21,15 @@ builder.Services.AddAwsClientServices(options =>
 });
 
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
 
-var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
-var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
 
-builder.Services.AddSwaggerGen(c =>
-{
-    c.SwaggerDoc("v1", new OpenApiInfo { Title = "MyProject", Version = "v1.0.0" });
-    c.IncludeXmlComments(xmlPath);
-    var securitySchema = new OpenApiSecurityScheme
+builder.Services.AddSwagger(options =>
     {
-        Description = "JWT Authorization header using the Bearer scheme. Example: \"Authorization: Bearer {token}\"",
-        Name = "Authorization",
-        In = ParameterLocation.Header,
-        Type = SecuritySchemeType.Http,
-        Scheme = "bearer",
-        Reference = new OpenApiReference
-        {
-            Type = ReferenceType.SecurityScheme,
-            Id = "Bearer"
-        }
-    };
-    c.AddSecurityDefinition("Bearer", securitySchema);
+        options.Title = "User Account";
+        options.Version = "v1";
+    }
+);
 
-    var securityRequirement = new OpenApiSecurityRequirement
-    {
-        { securitySchema, new[] { "Bearer" } }
-    };
-
-    c.AddSecurityRequirement(securityRequirement);
-    c.IncludeXmlComments(xmlPath);
-});
 builder.Services.AddInfrastructureServices(builder.Configuration);
 
 var app = builder.Build();

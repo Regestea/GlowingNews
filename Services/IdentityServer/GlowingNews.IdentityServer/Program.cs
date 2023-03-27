@@ -1,6 +1,7 @@
 using System.Reflection;
 using System.Security.Claims;
 using System.Text;
+using Configs.Shared;
 using GlowingNews.IdentityServer.Context;
 using GlowingNews.IdentityServer.Entities;
 using GlowingNews.IdentityServer.GrpcServices;
@@ -17,8 +18,6 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddGrpc();
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
 
 #region DatabaseConfig
 
@@ -27,44 +26,12 @@ builder.Services.AddEntityFrameworkNpgsql().AddDbContext<IdentityServerContext>(
 
 #endregion
 
-
-#region SwaggerConfig
-
-var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
-var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
-
-builder.Services.AddSwaggerGen(c =>
-{
-    c.SwaggerDoc("v1", new OpenApiInfo { Title = "MyProject", Version = "v1.0.0" });
-
-    var securitySchema = new OpenApiSecurityScheme
+builder.Services.AddSwagger(options =>
     {
-        Description = "JWT Authorization header using the Bearer scheme. Example: \"Authorization: Bearer {token}\"",
-        Name = "Authorization",
-        In = ParameterLocation.Header,
-        Type = SecuritySchemeType.Http,
-        Scheme = "bearer",
-        Reference = new OpenApiReference
-        {
-            Type = ReferenceType.SecurityScheme,
-            Id = "Bearer"
-        }
-    };
-
-    c.AddSecurityDefinition("Bearer", securitySchema);
-
-    var securityRequirement = new OpenApiSecurityRequirement
-    {
-        { securitySchema, new[] { "Bearer" } }
-    };
-
-    c.AddSecurityRequirement(securityRequirement);
-    c.IncludeXmlComments(xmlPath);
-});
-
-
-#endregion
-
+        options.Title = "Identity Server";
+        options.Version = "v1";
+    }
+);
 
 #region JwtBearer
 
@@ -79,7 +46,8 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ValidateLifetime = true,
             ValidateIssuerSigningKey = true,
             ValidIssuer = "https://localhost:7126",
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration.GetValue<string>("JWT:SecretKey") ?? throw new InvalidOperationException()))
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(
+                builder.Configuration.GetValue<string>("JWT:SecretKey") ?? throw new InvalidOperationException()))
         };
     });
 
@@ -100,7 +68,6 @@ builder.Services.AddAuthorization(options =>
 #endregion
 
 var app = builder.Build();
-
 
 
 app.MapGrpcService<AuthorizationGrpcService>();

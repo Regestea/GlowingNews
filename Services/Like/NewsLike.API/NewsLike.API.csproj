@@ -12,10 +12,10 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\..\BuildingBlocks\Configs.Shared\Configs.Shared.csproj" />
     <ProjectReference Include="..\..\..\BuildingBlocks\IdentityServer.Shared.Client\IdentityServer.Shared.Client.csproj" />
     <ProjectReference Include="..\..\..\BuildingBlocks\Security.Shared\Security.Shared.csproj" />
     <ProjectReference Include="..\NewsLike.Application\NewsLike.Application.csproj" />

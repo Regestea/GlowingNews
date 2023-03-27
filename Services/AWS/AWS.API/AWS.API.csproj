@@ -23,6 +23,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\..\BuildingBlocks\Configs.Shared\Configs.Shared.csproj" />
     <ProjectReference Include="..\..\..\BuildingBlocks\IdentityServer.Shared.Client\IdentityServer.Shared.Client.csproj" />
     <ProjectReference Include="..\..\..\BuildingBlocks\Security.Shared\Security.Shared.csproj" />
     <ProjectReference Include="..\AWS.Infrastructure\AWS.Infrastructure.csproj" />

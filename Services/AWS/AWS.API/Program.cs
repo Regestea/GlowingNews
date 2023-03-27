@@ -1,6 +1,7 @@
 using System.Reflection;
 using AWS.API.GrpcServices;
 using AWS.Infrastructure;
+using Configs.Shared;
 using IdentityServer.Shared.Client;
 using Microsoft.OpenApi.Models;
 
@@ -16,39 +17,15 @@ builder.Services.AddIdentityServerClientServices(options =>
 
 builder.Services.AddGrpc();
 builder.Services.AddControllers();
-builder.Services.AddEndpointsApiExplorer();
+
 builder.Services.AddInfrastructureServices(builder.Configuration);
 
-var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
-var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
-
-builder.Services.AddSwaggerGen(c =>
-{
-    c.SwaggerDoc("v1", new OpenApiInfo { Title = "AWS", Version = "v1.0.0" });
-    c.IncludeXmlComments(xmlPath);
-    var securitySchema = new OpenApiSecurityScheme
+builder.Services.AddSwagger(options =>
     {
-        Description = "JWT Authorization header using the Bearer scheme. Example: \"Authorization: Bearer {token}\"",
-        Name = "Authorization",
-        In = ParameterLocation.Header,
-        Type = SecuritySchemeType.Http,
-        Scheme = "bearer",
-        Reference = new OpenApiReference
-        {
-            Type = ReferenceType.SecurityScheme,
-            Id = "Bearer"
-        }
-    };
-    c.AddSecurityDefinition("Bearer", securitySchema);
-
-    var securityRequirement = new OpenApiSecurityRequirement
-    {
-        { securitySchema, new[] { "Bearer" } }
-    };
-
-    c.AddSecurityRequirement(securityRequirement);
-    c.IncludeXmlComments(xmlPath);
-});
+        options.Title = "AWS";
+        options.Version = "v1";
+    }
+);
 
 var app = builder.Build();
 

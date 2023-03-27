@@ -59,6 +59,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NewsLike.Domain", "Services
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NewsLike.Infrastructure", "Services\Like\NewsLike.Infrastructure\NewsLike.Infrastructure.csproj", "{B73A6246-04A0-4778-B75E-2CAECE94C15C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Configs.Shared", "BuildingBlocks\Configs.Shared\Configs.Shared.csproj", "{747337DE-9508-4D26-BFD0-EA7291D2D17C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -145,6 +147,10 @@ Global
 		{B73A6246-04A0-4778-B75E-2CAECE94C15C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B73A6246-04A0-4778-B75E-2CAECE94C15C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B73A6246-04A0-4778-B75E-2CAECE94C15C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{747337DE-9508-4D26-BFD0-EA7291D2D17C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{747337DE-9508-4D26-BFD0-EA7291D2D17C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{747337DE-9508-4D26-BFD0-EA7291D2D17C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{747337DE-9508-4D26-BFD0-EA7291D2D17C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -176,6 +182,7 @@ Global
 		{67804AC1-3BAE-4257-AABE-64B6FC64371D} = {4F1D8FA6-B202-4179-9954-74B79B513B58}
 		{18A2AC69-518B-467F-A512-0A3F13F319C7} = {4F1D8FA6-B202-4179-9954-74B79B513B58}
 		{B73A6246-04A0-4778-B75E-2CAECE94C15C} = {4F1D8FA6-B202-4179-9954-74B79B513B58}
+		{747337DE-9508-4D26-BFD0-EA7291D2D17C} = {D16FED1C-7798-4CCA-8DDE-7C47E53C827E}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {5CD97D83-F99D-46F4-8A7F-32A6255940C0}
