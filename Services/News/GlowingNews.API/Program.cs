@@ -2,6 +2,7 @@ using AWS.Shared.Client;
 using Configs.Shared;
 using GlowingNews.Infrastructure;
 using IdentityServer.Shared.Client;
+using MassTransit;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -29,6 +30,13 @@ builder.Services.AddSwagger(options =>
         options.Version = "v1";
     }
 );
+
+// masstransit rabbit mq 
+builder.Services.AddMassTransit(config => {
+    config.UsingRabbitMq((ctx, cfg) => {
+        cfg.Host(builder.Configuration["EventBusSettings:HostAddress"]);
+    });
+});
 
 var app = builder.Build();
 
