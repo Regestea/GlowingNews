@@ -69,6 +69,9 @@ builder.Services.AddAuthorization(options =>
 
 var app = builder.Build();
 
+//MigrateDatabase
+app.MigrateDatabaseServices();
+
 
 app.MapGrpcService<AuthorizationGrpcService>();
 // Configure the HTTP request pipeline.

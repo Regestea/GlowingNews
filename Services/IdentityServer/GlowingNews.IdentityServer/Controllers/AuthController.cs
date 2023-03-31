@@ -4,11 +4,15 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using GlowingNews.IdentityServer.Context;
 using GlowingNews.IdentityServer.Entities;
+using GlowingNews.IdentityServer.Extensions;
 using GlowingNews.IdentityServer.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Filters;
+using Microsoft.EntityFrameworkCore;
 using Security.Shared;
+using Microsoft.Win32;
 
 namespace GlowingNews.IdentityServer.Controllers
 {
@@ -16,9 +20,65 @@ namespace GlowingNews.IdentityServer.Controllers
     [ApiController]
     public class AuthController : ControllerBase
     {
-        [HttpPost]
-        public Task<IActionResult> Login(LoginModel model)
+        private IdentityServerContext _identityServerContext;
+
+        public AuthController(IdentityServerContext identityServerContext)
         {
+            _identityServerContext = identityServerContext;
+        }
+
+
+        [HttpPost("/Register")]
+        public async Task<IActionResult> Register(RegisterModel register)
+        {
+            register.Email = register.Email.Trim().ToLower();
+            register.UserName = register.Email.Trim();
+
+            var existUserName = await _identityServerContext.Users.AnyAsync(x=>x.Name==register.UserName);
+            if (existUserName)
+            {
+                return BadRequest("this user name is token");
+            }
+            var existEmail = await _identityServerContext.Users.AnyAsync(x=>x.Email==register.Email);
+            if (existEmail)
+            {
+                return BadRequest("this email registered");
+            }
+
+            var userRole =await _identityServerContext.Roles.SingleAsync(x => x.RoleTitle == Roles.User);
+
+            var user = new User()
+            {
+                Id = Guid.NewGuid(),
+                Email = register.Email,
+                Name = register.UserName,
+                Password = PasswordHash.Hash(register.Password)
+            };
+
+            await _identityServerContext.Users.AddAsync(user);
+
+            await _identityServerContext.UserRoles.AddAsync(new UserRole()
+                { Id = Guid.NewGuid(), RoleId = userRole.Id, UserId = user.Id });
+
+            await _identityServerContext.SaveChangesAsync();
+
+            return Ok(user.Id);
+        }
+
+        [HttpPost("/Login")]
+        public async Task<IActionResult> Login(LoginModel login)
+        {
+            login.Email = login.Email.Trim();
+            var user=_identityServerContext.Users.FirstOrDefault(x=>x.Email==login.Email&&x.Password==PasswordHash.Hash(login.Password));
+
+            if (user == null)
+            {
+                return Unauthorized(new { message = "Invalid username or password" });
+            }
+
+            var userRoles =await _identityServerContext.UserRoles.Where(x => x.UserId == user.Id).Include(x=>x.Role).ToListAsync();
+
+
             var configuration = HttpContext.RequestServices.GetRequiredService<IConfiguration>();
 
             var secretKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration.GetValue<string>("JWT:SecretKey") ?? throw new ArgumentNullException(nameof(configuration))));
@@ -27,24 +87,29 @@ namespace GlowingNews.IdentityServer.Controllers
 
             var signinCredentials = new SigningCredentials(secretKey, SecurityAlgorithms.HmacSha512);
 
+            var userClaims = new List<Claim>
+            {
+                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+                new Claim(ClaimTypes.Name, user.Name),
+                new Claim(ClaimTypes.Email, user.Email)
+            };
+
+            foreach (var userRole in userRoles)
+            {
+                userClaims.Add(new Claim(ClaimTypes.Role, userRole.Role.RoleTitle));
+            }
 
             var tokenOption = new JwtSecurityToken(
                 issuer: hostUrl,
-                claims: new List<Claim>
-                {
-                    new Claim(ClaimTypes.NameIdentifier,Guid.NewGuid().ToString()),
-                    new Claim(ClaimTypes.Name,model.UserName),
-                    new Claim(ClaimTypes.Email,"Email@email.com"),
-                    //new Claim(ClaimTypes.Role,Roles.Admin),
-                    new Claim(ClaimTypes.Role,Roles.User)
-                },
-                expires: DateTime.Now.AddMinutes(30),
+                claims: userClaims,
+                expires: DateTime.UtcNow.AddDays(30),
                 signingCredentials: signinCredentials
             );
-            var tokenString = new JwtSecurityTokenHandler().WriteToken(tokenOption);
-                
 
-            return Task.FromResult<IActionResult>(Ok(new { token = tokenString }));
+            var tokenString = new JwtSecurityTokenHandler().WriteToken(tokenOption);
+
+
+            return Ok(new { token = tokenString });
         }
     }
 }
