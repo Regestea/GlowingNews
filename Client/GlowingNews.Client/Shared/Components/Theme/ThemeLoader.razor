@@ -1,0 +1,36 @@
+﻿@inject Blazored.LocalStorage.ILocalStorageService localStorage
+
+@if (localThemeDto != null)
+{
+    <MudThemeProvider IsDarkMode="localThemeDto.IsDarkMode" />
+}
+
+<HeadContent>
+   
+    @if (localThemeDto != null)
+    {
+        <link rel="stylesheet" href="/css/Theme/NavBorderType/@(localThemeDto.NavBorderType).css" />
+        <link rel="stylesheet" href="/css/Theme/BackgroundType/@(localThemeDto.BackgroundType).css" />
+        <link rel="stylesheet" href="/css/Theme/BorderType/@(localThemeDto.BorderType).css" />
+        <link rel="stylesheet" href="/css/Theme/VisibilityType/@(localThemeDto.VisibilityType).css" />
+    }
+
+</HeadContent>
+
+
+@code {
+
+    private ThemeDto localThemeDto;
+
+    protected override async Task OnInitializedAsync()
+    {
+        localThemeDto = await localStorage.GetItemAsync<ThemeDto>("Theme") ?? new ThemeDto()
+            {
+                BackgroundType = BackgroundType.None,
+                BorderType = BorderType.None,
+                VisibilityType = VisibilityType.Regular,
+                NavBorderType = NavBorderType.None,
+                IsDarkMode = true
+            };
+    }
+}

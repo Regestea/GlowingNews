@@ -1,0 +1,36 @@
+﻿@page "/CustomizeTheme"
+@inject Blazored.LocalStorage.ILocalStorageService localStorage
+@inject NavigationManager uriHelper;
+
+@if (localThemeDto != null)
+{
+    <CustomizeThemeForm ThemeDto="SaveInLocalStorage" LocalThemeDto="@localThemeDto" />
+}
+else
+{
+    <h1>Loading</h1>
+}
+
+@code
+{
+    private ThemeDto localThemeDto;
+
+    protected override async Task OnInitializedAsync()
+    {
+        localThemeDto = await localStorage.GetItemAsync<ThemeDto>("Theme") ?? new ThemeDto()
+            {
+                BackgroundType = BackgroundType.None,
+                BorderType = BorderType.None,
+                VisibilityType = VisibilityType.Regular,
+                NavBorderType = NavBorderType.None,
+                IsDarkMode = true
+            };
+    }
+
+
+    private void SaveInLocalStorage(ThemeDto theme)
+    {
+        localStorage.SetItemAsync("Theme", theme);
+        uriHelper.NavigateTo(uriHelper.Uri, forceLoad: true);
+    }
+}

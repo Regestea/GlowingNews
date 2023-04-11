@@ -1,0 +1,6 @@
+﻿body {
+    background-image: url(/svg/svg1.svg);
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-size: cover;
+}
