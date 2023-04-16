@@ -1,6 +1,7 @@
 ﻿using GlowingNews.IdentityServer.Protos;
 using IdentityServer.Shared.Client.GrpcServices;
 using IdentityServer.Shared.Client.Repositories.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
@@ -8,12 +9,9 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace IdentityServer.Shared.Client.Attributes
 {
-
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = true, Inherited = true)]
-
-    public class AuthorizeByIdentityServer : ActionFilterAttribute, IAsyncActionFilter
+    public class AuthorizeByIdentityServer : AuthorizeAttribute, IAsyncAuthorizationFilter
     {
-
         private readonly string? requiredRoles;
 
         public AuthorizeByIdentityServer(string? requiredRoles = null)
@@ -21,9 +19,9 @@ namespace IdentityServer.Shared.Client.Attributes
             this.requiredRoles = requiredRoles;
         }
 
-        public override async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
+
+        public async Task OnAuthorizationAsync(AuthorizationFilterContext context)
         {
-            
             var authorizationGrpcServices =
                 context.HttpContext.RequestServices.GetService<AuthorizationGrpcServices>() ??
                 throw new ArgumentNullException(nameof(AuthorizationGrpcServices));
@@ -40,10 +38,9 @@ namespace IdentityServer.Shared.Client.Attributes
 
             var jwtToken = authorizationHeader.ToString().Replace("Bearer ", "");
 
-            ValidateTokenResponse? response;
-
-            // try to get token and roles from cache
-            response = await tokenCache.GetAsync<ValidateTokenResponse>(jwtToken);
+            var response =
+                // try to get token and roles from cache
+                await tokenCache.GetAsync<ValidateTokenResponse>(jwtToken);
 
             if (response == null)
             {
@@ -62,7 +59,6 @@ namespace IdentityServer.Shared.Client.Attributes
 
             if (requiredRoles == null)
             {
-                await next();
                 return;
             }
 
@@ -86,7 +82,6 @@ namespace IdentityServer.Shared.Client.Attributes
 
                 if (hasRequiredRole)
                 {
-                    await next();
                     return;
                 }
             }
