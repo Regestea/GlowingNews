@@ -2,6 +2,7 @@
 @using MudBlazor.Services
 @using MudBlazor.Utilities
 @using Microsoft.AspNetCore.Components
+@implements IDisposable
 
 <MudGrid Class="animate__animated animate__fadeIn ">
     <MudItem xs="12" sm="7" >
@@ -72,4 +73,10 @@
     {
         await ThemeDto.InvokeAsync(LocalThemeDto);
     }
+
+    public void Dispose()
+    {
+        form.Dispose();
+    }
+
 }
