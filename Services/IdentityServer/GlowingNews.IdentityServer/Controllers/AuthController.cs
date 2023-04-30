@@ -32,20 +32,23 @@ namespace GlowingNews.IdentityServer.Controllers
         public async Task<IActionResult> Register(RegisterModel register)
         {
             register.Email = register.Email.Trim().ToLower();
-            register.UserName = register.Email.Trim();
+            register.UserName = register.UserName.Trim();
 
-            var existUserName = await _identityServerContext.Users.AnyAsync(x=>x.Name==register.UserName);
+            var existUserName = await _identityServerContext.Users.AnyAsync(x => x.Name == register.UserName);
             if (existUserName)
             {
-                return BadRequest("this user name is token");
-            }
-            var existEmail = await _identityServerContext.Users.AnyAsync(x=>x.Email==register.Email);
-            if (existEmail)
-            {
-                return BadRequest("this email registered");
+                ModelState.AddModelError(nameof(register.UserName), "this user name is token");
+                return BadRequest(ModelState);
             }
 
-            var userRole =await _identityServerContext.Roles.SingleAsync(x => x.RoleTitle == Roles.User);
+            var existEmail = await _identityServerContext.Users.AnyAsync(x => x.Email == register.Email);
+            if (existEmail)
+            {
+                ModelState.AddModelError(nameof(register.Email), "this email registered");
+                return BadRequest(ModelState);
+            }
+
+            var userRole = await _identityServerContext.Roles.SingleAsync(x => x.RoleTitle == Roles.User);
 
             var user = new User()
             {
@@ -68,20 +71,25 @@ namespace GlowingNews.IdentityServer.Controllers
         [HttpPost("/Login")]
         public async Task<IActionResult> Login(LoginModel login)
         {
-            login.Email = login.Email.Trim();
-            var user=_identityServerContext.Users.FirstOrDefault(x=>x.Email==login.Email&&x.Password==PasswordHash.Hash(login.Password));
+            login.Email = login.Email.Trim().ToLower();
+            var user = _identityServerContext.Users.FirstOrDefault(x =>
+                x.Email == login.Email && x.Password == PasswordHash.Hash(login.Password));
 
             if (user == null)
             {
-                return Unauthorized(new { message = "Invalid username or password" });
+                ModelState.AddModelError(nameof(login.Email), "email not found");
+                return NotFound(ModelState);
             }
 
-            var userRoles =await _identityServerContext.UserRoles.Where(x => x.UserId == user.Id).Include(x=>x.Role).ToListAsync();
+            var userRoles = await _identityServerContext.UserRoles.Where(x => x.UserId == user.Id).Include(x => x.Role)
+                .ToListAsync();
 
 
             var configuration = HttpContext.RequestServices.GetRequiredService<IConfiguration>();
 
-            var secretKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration.GetValue<string>("JWT:SecretKey") ?? throw new ArgumentNullException(nameof(configuration))));
+            var secretKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(
+                configuration.GetValue<string>("JWT:SecretKey") ??
+                throw new ArgumentNullException(nameof(configuration))));
 
             string hostUrl = $"{HttpContext.Request.Scheme}://{HttpContext.Request.Host}";
 

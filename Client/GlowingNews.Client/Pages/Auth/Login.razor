@@ -1,0 +1,114 @@
+﻿@page "/Login"
+@using GlowingNews.Client.Models.Auth
+@using GlowingNews.Client.Services.Interfaces
+@inject IAuthService AuthService
+@inject Blazored.LocalStorage.ILocalStorageService LocalStorage
+@inject NavigationManager NavigationManager;
+@inject AuthenticationStateProvider AuthenticationStateProvider
+
+<EditForm EditContext="editContext" OnValidSubmit="OnValidSubmit">
+    <DataAnnotationsValidator/>
+    <MudGrid Class="animate__animated animate__fadeIn ">
+        <MudItem xs="12" sm="7">
+            <MudCard Class="visibility border">
+                <MudChip Text="pink" Variant="Variant.Text" Color="Color.Secondary">Login</MudChip>
+                <MudCardContent>
+                    <MudTextField @onfocusout="ClearErrors" Label="Email" HelperText="Max. 50 characters"
+                                  @bind-Value="model.Email" For="@(() => model.Email)"/>
+
+                    <MudTextField @onfocusout="ClearErrors" Label="Password" HelperText="Choose a strong password" Class="mt-3"
+                                  @bind-Value="model.Password" For="@(() => model.Password)" InputType="InputType.Password"/>
+
+                </MudCardContent>
+
+                <MudCardActions>
+
+                    <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto">Login</MudButton>
+                </MudCardActions>
+            </MudCard>
+        </MudItem>
+        <MudItem xs="12" sm="5">
+            <MudImage Src="/images/Auth.png" Width="332" Height="265" Alt="Swedish Farm House" Elevation="25" Class="rounded-lg ma-4 visibility border"/>
+        </MudItem>
+    </MudGrid>
+
+</EditForm>
+
+<AuthorizeView>
+    <Authorized>
+        <!-- Content to display for authenticated users -->
+        <h1>
+            Welcome,
+            @if (context.User.Identity != null)
+            {
+                @context.User.Identity.Name
+            }
+            !
+        </h1>
+    </Authorized>
+    <NotAuthorized>
+        <!-- Content to display for unauthenticated users -->
+        <h1>Please log in to access this content.</h1>
+    </NotAuthorized>
+</AuthorizeView>
+
+@code {
+    private EditContext? editContext;
+    static LoginModel model = new();
+    private ValidationMessageStore? messageStore;
+
+    protected override void OnInitialized()
+    {
+        editContext = new(model);
+        messageStore = new(editContext);
+    }
+
+    private void ClearErrors()
+    {
+        messageStore?.Clear();
+        editContext?.NotifyValidationStateChanged();
+    }
+
+    private async Task OnValidSubmit(EditContext context)
+    {
+        await HandleLogin();
+    }
+
+    private void AddValidationError(string fieldName, string errorMessage)
+    {
+        messageStore?.Add(new FieldIdentifier(model, fieldName), errorMessage);
+    }
+
+    private async Task HandleLogin()
+    {
+        var result = await AuthService.Login(model);
+
+    //success login set token redirect to home hide login and register link and show logout
+        if (result.IsT0)
+        {
+            await LocalStorage.SetItemAsync("authToken", result.AsT0.Value);
+            NavigationManager.NavigateTo("/");
+        }
+
+    //user not found
+        if (result.IsT1)
+        {
+            messageStore?.Clear();
+            AddValidationError(nameof(model.Email), "User not found");
+            editContext?.NotifyValidationStateChanged();
+        }
+
+    //validation failed show error messages
+        if (result.IsT2)
+        {
+            messageStore?.Clear();
+            foreach (var validation in result.AsT2)
+            {
+                AddValidationError(validation.Field, validation.Error);
+            }
+            editContext?.NotifyValidationStateChanged();
+        }
+        await AuthenticationStateProvider.GetAuthenticationStateAsync();
+    }
+
+}

@@ -32,6 +32,17 @@ builder.Services.AddSwagger(options =>
         options.Version = "v1";
     }
 );
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAllOrigins",
+        builder =>
+        {
+            builder
+                .AllowAnyOrigin()
+                .AllowAnyHeader()
+                .AllowAnyMethod();
+        });
+});
 
 #region JwtBearer
 
@@ -68,7 +79,7 @@ builder.Services.AddAuthorization(options =>
 #endregion
 
 var app = builder.Build();
-
+app.UseCors("AllowAllOrigins");
 //MigrateDatabase
 app.MigrateDatabaseServices();
 

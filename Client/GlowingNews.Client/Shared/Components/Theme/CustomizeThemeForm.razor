@@ -2,44 +2,45 @@
 @using MudBlazor.Services
 @using MudBlazor.Utilities
 @using Microsoft.AspNetCore.Components
+@implements IDisposable
 
 <MudGrid Class="animate__animated animate__fadeIn ">
-    <MudItem xs="12" sm="7" >
-        <MudPaper Class="pa-4 border visibility" >
+    <MudItem xs="12" sm="7">
+        <MudPaper Class="pa-4 border visibility">
             <MudForm @ref="@form">
 
                 <MudCardContent >
 
                     <MudSelect @bind-Value="LocalThemeDto.NavBorderType" Label="Nav Border Type" AnchorOrigin="Origin.BottomCenter">
-                        <MudSelectItem Value="NavBorderType.None" />
-                        <MudSelectItem Value="NavBorderType.Neon" />
-                        <MudSelectItem Value="NavBorderType.DarkNeon" />
-                        <MudSelectItem Value="NavBorderType.LightNeon" />
-                        <MudSelectItem Value="NavBorderType.Dark" />
-                        <MudSelectItem Value="NavBorderType.Light" />
+                        <MudSelectItem Value="NavBorderType.None"/>
+                        <MudSelectItem Value="NavBorderType.Neon"/>
+                        <MudSelectItem Value="NavBorderType.DarkNeon"/>
+                        <MudSelectItem Value="NavBorderType.LightNeon"/>
+                        <MudSelectItem Value="NavBorderType.Dark"/>
+                        <MudSelectItem Value="NavBorderType.Light"/>
                     </MudSelect>
 
                     <MudSelect @bind-Value="LocalThemeDto.BackgroundType" Label="Background Type" AnchorOrigin="Origin.BottomCenter">
-                        <MudSelectItem Value="BackgroundType.None" />
-                        <MudSelectItem Value="BackgroundType.DarkGradient" />
-                        <MudSelectItem Value="BackgroundType.LightGradient" />
-                        <MudSelectItem Value="BackgroundType.MaterialSvg1" />
-                        <MudSelectItem Value="BackgroundType.MaterialSvg2" />
+                        <MudSelectItem Value="BackgroundType.None"/>
+                        <MudSelectItem Value="BackgroundType.DarkGradient"/>
+                        <MudSelectItem Value="BackgroundType.LightGradient"/>
+                        <MudSelectItem Value="BackgroundType.MaterialSvg1"/>
+                        <MudSelectItem Value="BackgroundType.MaterialSvg2"/>
                     </MudSelect>
 
                     <MudSelect @bind-Value="LocalThemeDto.BorderType" Label="Border Type" AnchorOrigin="Origin.BottomCenter">
-                        <MudSelectItem Value="BorderType.None" />
-                        <MudSelectItem Value="BorderType.Neon" />
-                        <MudSelectItem Value="BorderType.Dark" />
-                        <MudSelectItem Value="BorderType.DarkNeon" />
-                        <MudSelectItem Value="BorderType.Light" />
-                        <MudSelectItem Value="BorderType.LightNeon" />
+                        <MudSelectItem Value="BorderType.None"/>
+                        <MudSelectItem Value="BorderType.Neon"/>
+                        <MudSelectItem Value="BorderType.Dark"/>
+                        <MudSelectItem Value="BorderType.DarkNeon"/>
+                        <MudSelectItem Value="BorderType.Light"/>
+                        <MudSelectItem Value="BorderType.LightNeon"/>
                     </MudSelect>
 
                     <MudSelect @bind-Value="LocalThemeDto.VisibilityType" Label="Visibility Type" AnchorOrigin="Origin.BottomCenter">
-                        <MudSelectItem Value="VisibilityType.Regular" />
-                        <MudSelectItem Value="VisibilityType.DarkGlasses" />
-                        <MudSelectItem Value="VisibilityType.LightGlasses" />
+                        <MudSelectItem Value="VisibilityType.Regular"/>
+                        <MudSelectItem Value="VisibilityType.DarkGlasses"/>
+                        <MudSelectItem Value="VisibilityType.LightGlasses"/>
                     </MudSelect>
 
                 </MudCardContent>
@@ -60,10 +61,10 @@
 </MudGrid>
 
 @code {
-    MudForm form;
+    MudForm? form;
 
     [Parameter]
-    public ThemeDto LocalThemeDto { get; set; } 
+    public ThemeDto LocalThemeDto { get; set; } = null!;
 
     [Parameter]
     public EventCallback<ThemeDto> ThemeDto { get; set; }
@@ -72,4 +73,10 @@
     {
         await ThemeDto.InvokeAsync(LocalThemeDto);
     }
+
+    public void Dispose()
+    {
+        form?.Dispose();
+    }
+
 }
