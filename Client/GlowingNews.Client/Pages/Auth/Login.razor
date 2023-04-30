@@ -1,83 +1,114 @@
 ﻿@page "/Login"
-<h3>Login</h3>
+@using GlowingNews.Client.Models.Auth
+@using GlowingNews.Client.Services.Interfaces
+@inject IAuthService AuthService
+@inject Blazored.LocalStorage.ILocalStorageService LocalStorage
+@inject NavigationManager NavigationManager;
+@inject AuthenticationStateProvider AuthenticationStateProvider
 
-@using System.ComponentModel.DataAnnotations
-
-<EditForm Model="@model" OnValidSubmit="OnValidSubmit">
-    <DataAnnotationsValidator />
-    <MudGrid>
+<EditForm EditContext="editContext" OnValidSubmit="OnValidSubmit">
+    <DataAnnotationsValidator/>
+    <MudGrid Class="animate__animated animate__fadeIn ">
         <MudItem xs="12" sm="7">
-            <MudCard>
+            <MudCard Class="visibility border">
+                <MudChip Text="pink" Variant="Variant.Text" Color="Color.Secondary">Login</MudChip>
                 <MudCardContent>
-                    <MudTextField Label="First name" HelperText="Max. 8 characters"
-                    @bind-Value="model.Username" For="@(() => model.Username)" />
-                    <MudTextField Label="Email" Class="mt-3"
-                    @bind-Value="model.Email" For="@(() => model.Email)" />
-                    <MudTextField Label="Password" HelperText="Choose a strong password" Class="mt-3"
-                    @bind-Value="model.Password" For="@(() => model.Password)" InputType="InputType.Password" />
-                    <MudTextField Label="Password" HelperText="Repeat the password" Class="mt-3"
-                    @bind-Value="model.Password2" For="@(() => model.Password2)" InputType="InputType.Password" />
+                    <MudTextField @onfocusout="ClearErrors" Label="Email" HelperText="Max. 50 characters"
+                                  @bind-Value="model.Email" For="@(() => model.Email)"/>
+
+                    <MudTextField @onfocusout="ClearErrors" Label="Password" HelperText="Choose a strong password" Class="mt-3"
+                                  @bind-Value="model.Password" For="@(() => model.Password)" InputType="InputType.Password"/>
+
                 </MudCardContent>
+
                 <MudCardActions>
-                    <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto">Register</MudButton>
+
+                    <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto">Login</MudButton>
                 </MudCardActions>
             </MudCard>
         </MudItem>
         <MudItem xs="12" sm="5">
-            <MudPaper Class="pa-4 mud-height-full">
-                <MudText Typo="Typo.subtitle2">Validation Summary</MudText>
-                @if (success)
-                {
-                    <MudText Color="Color.Success">Success</MudText>
-                }
-                else
-                {
-                    <MudText Color="@Color.Error">
-                        <ValidationSummary />
-                    </MudText>
-                }
-            </MudPaper>
-        </MudItem>
-        <MudItem xs="12">
-            <MudText Typo="Typo.body2" Align="Align.Center">
-                Fill out the form correctly to see the success message.
-            </MudText>
+            <MudImage Src="/images/Auth.png" Width="332" Height="265" Alt="Swedish Farm House" Elevation="25" Class="rounded-lg ma-4 visibility border"/>
         </MudItem>
     </MudGrid>
+
 </EditForm>
 
+<AuthorizeView>
+    <Authorized>
+        <!-- Content to display for authenticated users -->
+        <h1>
+            Welcome,
+            @if (context.User.Identity != null)
+            {
+                @context.User.Identity.Name
+            }
+            !
+        </h1>
+    </Authorized>
+    <NotAuthorized>
+        <!-- Content to display for unauthenticated users -->
+        <h1>Please log in to access this content.</h1>
+    </NotAuthorized>
+</AuthorizeView>
 
 @code {
-    RegisterAccountForm model = new RegisterAccountForm();
-    bool success;
+    private EditContext? editContext;
+    static LoginModel model = new();
+    private ValidationMessageStore? messageStore;
 
-    public class RegisterAccountForm
+    protected override void OnInitialized()
     {
-        [Required]
-        [StringLength(8, ErrorMessage = "Name length can't be more than 8.")]
-        public string Username { get; set; }
-
-        [Required]
-        [EmailAddress]
-        public string Email { get; set; }
-
-        [Required]
-        [StringLength(30, ErrorMessage = "Password must be at least 8 characters long.", MinimumLength = 8)]
-        public string Password { get; set; }
-
-        [Required]
-        [Compare(nameof(Password))]
-        public string Password2 { get; set; }
-
+        editContext = new(model);
+        messageStore = new(editContext);
     }
 
-    private void OnValidSubmit(EditContext context)
+    private void ClearErrors()
     {
-        success = true;
-        StateHasChanged();
+        messageStore?.Clear();
+        editContext?.NotifyValidationStateChanged();
     }
 
-}
-@code {
+    private async Task OnValidSubmit(EditContext context)
+    {
+        await HandleLogin();
+    }
+
+    private void AddValidationError(string fieldName, string errorMessage)
+    {
+        messageStore?.Add(new FieldIdentifier(model, fieldName), errorMessage);
+    }
+
+    private async Task HandleLogin()
+    {
+        var result = await AuthService.Login(model);
+
+    //success login set token redirect to home hide login and register link and show logout
+        if (result.IsT0)
+        {
+            await LocalStorage.SetItemAsync("authToken", result.AsT0.Value);
+            NavigationManager.NavigateTo("/");
+        }
+
+    //user not found
+        if (result.IsT1)
+        {
+            messageStore?.Clear();
+            AddValidationError(nameof(model.Email), "User not found");
+            editContext?.NotifyValidationStateChanged();
+        }
+
+    //validation failed show error messages
+        if (result.IsT2)
+        {
+            messageStore?.Clear();
+            foreach (var validation in result.AsT2)
+            {
+                AddValidationError(validation.Field, validation.Error);
+            }
+            editContext?.NotifyValidationStateChanged();
+        }
+        await AuthenticationStateProvider.GetAuthenticationStateAsync();
+    }
 
 }
