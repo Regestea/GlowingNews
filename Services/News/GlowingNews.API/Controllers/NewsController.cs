@@ -45,10 +45,6 @@ namespace GlowingNews.API.Controllers
             var news = await _newsRepository.LastNewsAsync(userId);
             if (news != null)
             {
-                if (news.MediaPath != null)
-                {
-                    news.MediaPath = AwsFile.GetUrl(news.MediaPath);
-                }
                 return Ok(news);
             }
 
@@ -70,13 +66,7 @@ namespace GlowingNews.API.Controllers
 
             if (newsList != null)
             {
-                foreach (var news in newsList)
-                {
-                    if (news.MediaPath != null)
-                    {
-                        news.MediaPath = news.MediaPath = AwsFile.GetUrl(news.MediaPath);
-                    }
-                }
+                
 
                 return Ok(newsList);
             }
