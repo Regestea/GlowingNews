@@ -19,6 +19,7 @@
     <PackageReference Include="MudBlazor.ThemeManager" Version="1.0.7" />
     <PackageReference Include="OneOf" Version="3.0.243" />
     <PackageReference Include="OneOf.SourceGenerator" Version="3.0.243" />
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.30.0" />
   </ItemGroup>
 
   <ItemGroup>

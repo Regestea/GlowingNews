@@ -4,6 +4,7 @@ using Blazored.LocalStorage;
 using GlowingNews.Client.DTOs.Error;
 using GlowingNews.Client.Extensions;
 using GlowingNews.Client.Models.Auth;
+using GlowingNews.Client.responses;
 using GlowingNews.Client.responses.Base;
 using GlowingNews.Client.Services.Interfaces;
 using Microsoft.AspNetCore.Components.Authorization;
@@ -16,14 +17,11 @@ namespace GlowingNews.Client.Services
     {
         private readonly AuthenticationStateProvider _authStateProvider;
         private HttpClient _httpClient;
-        private ILocalStorageService _localStorageService;
 
-        public AuthService(AuthenticationStateProvider authStateProvider, IHttpClientFactory httpClientFactory,
-            ILocalStorageService localStorageService)
+        public AuthService(AuthenticationStateProvider authStateProvider, IHttpClientFactory httpClientFactory)
         {
             _authStateProvider = authStateProvider;
             _httpClient = httpClientFactory.CreateClient(nameof(Enums.HttpClients.IdentityServer));
-            _localStorageService = localStorageService;
         }
 
 
@@ -46,7 +44,7 @@ namespace GlowingNews.Client.Services
             return new Error<string>("unknown issue");
         }
 
-        public async Task<ReadResponse<string>> Login(LoginModel request)
+        public async Task<ReadResponse<JwtToken>> Login(LoginModel request)
         {
             var requestStringContent = await JsonConverter.ToStringContent(request);
 
@@ -54,7 +52,8 @@ namespace GlowingNews.Client.Services
 
             if (response.StatusCode == HttpStatusCode.OK)
             {
-                return new Success<string>(response.Content);
+                var token =await JsonConverter.ToObject<JwtToken>(response.Content);
+                return new Success<JwtToken>(token);
             }
 
             if (response.StatusCode == HttpStatusCode.BadRequest)

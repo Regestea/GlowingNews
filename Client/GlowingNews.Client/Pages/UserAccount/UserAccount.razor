@@ -1,15 +1,18 @@
 ﻿@page "/UserAccount"
+@using GlowingNews.Client.Shared.Components.UserAccount
+@inject IFollowService FollowService
+@inject AuthStateProvider AuthStateProvider
 
 <MudGrid Class="animate__animated animate__fadeIn">
     <MudItem xs="8">
         <MudCard Class="visibility border d-flex flex-column align-center pa-6 ">
-            <MudAvatar Image="/gif/profile/user.gif" Style="width: 40%; height: 45%;background: none" />
+            <MudAvatar Image="/gif/profile/user.gif" Style="width: 40%; height: 45%; background: none" />
             <MudCardContent>
                 <MudText Typo="Typo.h5">About User</MudText>
                 <MudText Typo="Typo.body2">Old paint found on a stone house door.</MudText>
                 <MudText Typo="Typo.body2">This photo was taken in a small village in Istra Croatia.</MudText>
             </MudCardContent>
-            <MudCardActions  >
+            <MudCardActions>
                 <MudLink Href="/UserAccount/Detail/Edit" Class="ma-4" Variant="Variant.Filled" StartIcon="@Icons.Material.Outlined.Edit" Color="Color.Info">Edit details </MudLink>
                 <MudLink Href="/UserAccount/Detail/Edit" Class="ma-4" Variant="Variant.Filled" StartIcon="@Icons.Material.Outlined.Edit" Color="Color.Info">My News </MudLink>
             </MudCardActions>
@@ -17,194 +20,126 @@
     </MudItem>
 
     <MudItem xs="4" Class="visibility border">
-        
-        
+
+
         <MudTabs Elevation="4" Rounded="true" Centered="true" Color="@Color.Primary">
-            <MudTabPanel Text="flowing">
+            <MudTabPanel Text="Followings">
 
                 <div Style="overflow: scroll; height: 35em">
-                    
-                    
-                    <MudCardHeader >
-                        <CardHeaderAvatar>
-                            <MudAvatar Color="Color.Secondary">A</MudAvatar>
-                        </CardHeaderAvatar>
-                        <CardHeaderContent>
-                            <MudText Typo="Typo.body1">Admin</MudText>
-                        </CardHeaderContent>
-                        <CardHeaderActions>
-                            <MudButton Variant="Variant.Filled" Color="Color.Secondary">UnFollow</MudButton>
-                        </CardHeaderActions>
-                    </MudCardHeader>
-            
-                    <MudCardHeader >
-                        <CardHeaderAvatar>
-                            <MudAvatar Color="Color.Secondary">A</MudAvatar>
-                        </CardHeaderAvatar>
-                        <CardHeaderContent>
-                            <MudText Typo="Typo.body1">Admin</MudText>
-                        </CardHeaderContent>
-                        <CardHeaderActions>
-                            <MudButton Variant="Variant.Filled" Color="Color.Secondary">UnFollow</MudButton>
-                        </CardHeaderActions>
-                    </MudCardHeader>
-            
-                    <MudCardHeader >
-                        <CardHeaderAvatar>
-                            <MudAvatar Color="Color.Secondary">A</MudAvatar>
-                        </CardHeaderAvatar>
-                        <CardHeaderContent>
-                            <MudText Typo="Typo.body1">Admin</MudText>
-                        </CardHeaderContent>
-                        <CardHeaderActions>
-                            <MudButton Variant="Variant.Filled" Color="Color.Secondary">UnFollow</MudButton>
-                        </CardHeaderActions>
-                    </MudCardHeader>
-              
-                    <MudCardHeader >
-                        <CardHeaderAvatar>
-                            <MudAvatar Color="Color.Secondary">A</MudAvatar>
-                        </CardHeaderAvatar>
-                        <CardHeaderContent>
-                            <MudText Typo="Typo.body1">Admin</MudText>
-                        </CardHeaderContent>
-                        <CardHeaderActions>
-                            <MudButton Variant="Variant.Filled" Color="Color.Secondary">UnFollow</MudButton>
-                        </CardHeaderActions>
-                    </MudCardHeader>
-                    
-                    <MudCardHeader >
-                        <CardHeaderAvatar>
-                            <MudAvatar Color="Color.Secondary">A</MudAvatar>
-                        </CardHeaderAvatar>
-                        <CardHeaderContent>
-                            <MudText Typo="Typo.body1">Admin</MudText>
-                        </CardHeaderContent>
-                        <CardHeaderActions>
-                            <MudButton Variant="Variant.Filled" Color="Color.Secondary">UnFollow</MudButton>
-                        </CardHeaderActions>
-                    </MudCardHeader>
-                    
-                    <MudCardHeader >
-                        <CardHeaderAvatar>
-                            <MudAvatar Color="Color.Secondary">A</MudAvatar>
-                        </CardHeaderAvatar>
-                        <CardHeaderContent>
-                            <MudText Typo="Typo.body1">Admin</MudText>
-                        </CardHeaderContent>
-                        <CardHeaderActions>
-                            <MudButton Variant="Variant.Filled" Color="Color.Secondary">UnFollow</MudButton>
-                        </CardHeaderActions>
-                    </MudCardHeader>
-                    
-                    <MudCardHeader >
-                        <CardHeaderAvatar>
-                            <MudAvatar Color="Color.Secondary">A</MudAvatar>
-                        </CardHeaderAvatar>
-                        <CardHeaderContent>
-                            <MudText Typo="Typo.body1">Admin</MudText>
-                        </CardHeaderContent>
-                        <CardHeaderActions>
-                            <MudButton Variant="Variant.Filled" Color="Color.Secondary">UnFollow</MudButton>
-                        </CardHeaderActions>
-                    </MudCardHeader>
-                    
-                    <MudCardHeader >
-                        <CardHeaderAvatar>
-                            <MudAvatar Color="Color.Secondary">A</MudAvatar>
-                        </CardHeaderAvatar>
-                        <CardHeaderContent>
-                            <MudText Typo="Typo.body1">Admin</MudText>
-                        </CardHeaderContent>
-                        <CardHeaderActions>
-                            <MudButton Variant="Variant.Filled" Color="Color.Secondary">UnFollow</MudButton>
-                        </CardHeaderActions>
-                    </MudCardHeader>
-                    
-                    <MudCardHeader >
-                        <CardHeaderAvatar>
-                            <MudAvatar Color="Color.Secondary">A</MudAvatar>
-                        </CardHeaderAvatar>
-                        <CardHeaderContent>
-                            <MudText Typo="Typo.body1">Admin</MudText>
-                        </CardHeaderContent>
-                        <CardHeaderActions>
-                            <MudButton Variant="Variant.Filled" Color="Color.Secondary">UnFollow</MudButton>
-                        </CardHeaderActions>
-                    </MudCardHeader>
-                    
-                    <MudCardHeader >
-                        <CardHeaderAvatar>
-                            <MudAvatar Color="Color.Secondary">A</MudAvatar>
-                        </CardHeaderAvatar>
-                        <CardHeaderContent>
-                            <MudText Typo="Typo.body1">Admin</MudText>
-                        </CardHeaderContent>
-                        <CardHeaderActions>
-                            <MudButton Variant="Variant.Filled" Color="Color.Secondary">UnFollow</MudButton>
-                        </CardHeaderActions>
-                    </MudCardHeader>
-                    
-                    <MudCardHeader >
-                        <CardHeaderAvatar>
-                            <MudAvatar Color="Color.Secondary">A</MudAvatar>
-                        </CardHeaderAvatar>
-                        <CardHeaderContent>
-                            <MudText Typo="Typo.body1">Admin</MudText>
-                        </CardHeaderContent>
-                        <CardHeaderActions>
-                            <MudButton Variant="Variant.Filled" Color="Color.Secondary">UnFollow</MudButton>
-                        </CardHeaderActions>
-                    </MudCardHeader>
+
+                    @if (FollowingLoading)
+                    {
+                        <MudCardHeader Class=" d-flex flex-column align-center">
+                            <CardHeaderContent>
+                                <MudProgressCircular Color="Color.Secondary" Size="Size.Large" Indeterminate="true" />
+                            </CardHeaderContent>
+                        </MudCardHeader>
+                    }
+
+                    @if (Followings != null)
+                    {
+                        @foreach (var Following in Followings)
+                        {
+                            <MudCardHeader Class="animate__animated animate__backInRight" Style="@AnimationDelay(Followings.IndexOf(Following))">
+                                <CardHeaderAvatar>
+                                    <MudAvatar Color="Color.Secondary">@Following.UserName.Substring(0, 1).ToUpper()</MudAvatar>
+                                </CardHeaderAvatar>
+                                <CardHeaderContent>
+                                    <MudText Typo="Typo.body1">@Following.UserName</MudText>
+                                </CardHeaderContent>
+                                <CardHeaderActions>
+                                    <Follow UserId="Following.UserId" IsFollow="false"></Follow>
+                                </CardHeaderActions>
+                            </MudCardHeader>
+
+                        }
+                    }
+
+                    @if (Followings.Count == 0 && FollowingLoading == false)
+                    {
+                        <MudCardHeader>
+                            <CardHeaderContent>
+                                <MudText Typo="Typo.body1">Oops. Looks like You did not follow anyone</MudText>
+                            </CardHeaderContent>
+                        </MudCardHeader>
+                    }
 
                 </div>
             </MudTabPanel>
 
-            <MudTabPanel Text="flowers">
+            <MudTabPanel Text="Followers">
 
-                <MudCardHeader >
-                    <CardHeaderAvatar>
-                        <MudAvatar Color="Color.Primary">B</MudAvatar>
-                    </CardHeaderAvatar>
-                    <CardHeaderContent>
-                        <MudText Typo="Typo.body1">Bdmin</MudText>
-                    </CardHeaderContent>
-                    <CardHeaderActions>
-                        <MudButton Variant="Variant.Filled" Color="Color.Secondary">Remove</MudButton>
-                    </CardHeaderActions>
-                </MudCardHeader>
-                
-                <MudCardHeader >
-                    <CardHeaderAvatar>
-                        <MudAvatar Color="Color.Primary">B</MudAvatar>
-                    </CardHeaderAvatar>
-                    <CardHeaderContent>
-                        <MudText Typo="Typo.body1">Bdmin</MudText>
-                    </CardHeaderContent>
-                    <CardHeaderActions>
-                        <MudButton Variant="Variant.Filled" Color="Color.Secondary">Remove</MudButton>
-                    </CardHeaderActions>
-                </MudCardHeader>
-   
+                @if (FollowerLoading)
+                {
+                    <MudCardHeader Class=" d-flex flex-column align-center">
+                        <CardHeaderContent>
+                            <MudProgressCircular Color="Color.Secondary" Size="Size.Large" Indeterminate="true" />
+                        </CardHeaderContent>
+                    </MudCardHeader>
+                }
+                @if (Followers != null)
+                {
+                    @foreach (var follower in Followers)
+                    {
+                        <MudCardHeader Class="animate__animated animate__backInRight" Style="@AnimationDelay(Followers.IndexOf(follower))">
+                            <CardHeaderAvatar>
+                                <MudAvatar Color="Color.Primary">@follower.UserName.Substring(0, 1).ToUpper()</MudAvatar>
+                            </CardHeaderAvatar>
+                            <CardHeaderContent>
+                                <MudText Typo="Typo.body1">@follower.UserName</MudText>
+                            </CardHeaderContent>
+                        </MudCardHeader>
+                    }
+                }
+
+                @if (Followers.Count == 0 && FollowerLoading == false)
+                {
+                    <MudCardHeader>
+                        <CardHeaderContent>
+                            <MudText Typo="Typo.body1">Oops. Looks like You don't have any follower</MudText>
+                        </CardHeaderContent>
+                    </MudCardHeader>
+                }
+
+
             </MudTabPanel>
 
         </MudTabs>
-        
 
-      
-    
-        </MudItem>
+
+    </MudItem>
 
 </MudGrid>
 
 
-
-
-
-
-
-
-
 @code {
+    List<Follower>? Followers = new List<Follower>();
+    List<Following>? Followings = new List<Following>();
+    UserDto user;
 
+    private bool FollowerLoading = true;
+    private bool FollowingLoading = true;
+
+    protected override async Task OnInitializedAsync()
+    {
+        user =await AuthStateProvider.ExtractUserDataFromLocalToken();
+
+        var followersResult = await FollowService.GetFollowerList(user.Id);
+
+        var followingsResult = await FollowService.GetFollowingList(user.Id);
+
+        Followers = followersResult.AsT0.Value;
+
+        Followings = followingsResult.AsT0.Value;
+
+        FollowerLoading = false;
+        FollowingLoading = false;
+
+    }
+
+    private string AnimationDelay(int index)
+    {
+        double i = index * 0.2;
+        return $"animation-delay: {i}s";
+    }
 }

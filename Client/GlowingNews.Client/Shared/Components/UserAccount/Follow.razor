@@ -1,0 +1,33 @@
+﻿@inject IFollowService FollowService
+
+@if (IsFollow)
+{
+    <MudButton @onclick="FollowUser" Variant="Variant.Filled" Color="Color.Success">Follow</MudButton>
+}
+else
+{
+    <MudButton @onclick="UnFollowUser" Variant="Variant.Filled" Color="Color.Secondary">UnFollow</MudButton>
+}
+
+@code {
+    [Parameter]
+    public Guid UserId { get; set; }
+
+    [Parameter]
+    public bool IsFollow { get; set; }
+
+    
+
+    private async Task FollowUser()
+    {
+        //await FollowService.Follow(UserId);
+        IsFollow = false;
+    }
+
+    private async Task UnFollowUser()
+    {
+        //await FollowService.UnFollow(UserId);
+        IsFollow = true;
+    }
+
+}

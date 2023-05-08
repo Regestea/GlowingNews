@@ -18,7 +18,11 @@ builder.RootComponents.Add<HeadOutlet>("head::after");
 
 builder.Services.AddAuthorizationCore();
 builder.Services.AddScoped<AuthenticationStateProvider, AuthStateProvider>();
+builder.Services.AddScoped< AuthStateProvider>();
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IFollowService, FollowService>();
+builder.Services.AddScoped<IUserService, UserService>();
+
 
 builder.Services.AddHttpClient(nameof(HttpClients.Aws),
     client => { client.BaseAddress = new Uri("https://localhost:7268/"); });
@@ -36,6 +40,6 @@ builder.Services.AddHttpClient(nameof(HttpClients.Search),
     client => { client.BaseAddress = new Uri("https://localhost:7092/"); });
 
 builder.Services.AddHttpClient(nameof(HttpClients.User),
-    client => { client.BaseAddress = new Uri("https://localhost:7050/"); });
+    client => { client.BaseAddress = new Uri("https://localhost:7050/api/"); });
 
 await builder.Build().RunAsync();
