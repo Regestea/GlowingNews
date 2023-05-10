@@ -26,6 +26,24 @@ namespace UserAccount.API.Controllers
             _jwtTokenRepository = jwtTokenRepository;
         }
 
+
+        //find user by user name
+
+        /// <summary>
+        /// Get logged in user
+        /// </summary>
+        /// <response code="200">Success: UserDetail</response>
+        [ProducesResponseType(typeof(List<UserDto>), StatusCodes.Status200OK)]
+        [AuthorizeByIdentityServer(Roles.User + "|" + Roles.Admin)]
+        [HttpGet]
+        public async Task<IActionResult> SearchUserName([FromQuery] string userName)
+        {
+            var users=await _userRepository.SearchUserAsync(userName);
+
+            return Ok(users);
+        }
+
+
         /// <summary>
         /// Get logged in user
         /// </summary>
@@ -50,6 +68,7 @@ namespace UserAccount.API.Controllers
                 });
                 user = await _userRepository.GetUserAsync(userDto.Id);
             }
+
             if (user?.Image != null)
             {
                 var imageUrl = AwsFile.GetUrl(user.Image);
@@ -70,11 +89,12 @@ namespace UserAccount.API.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetUser(Guid id)
         {
-            var user=await _userRepository.GetUserAsync(id);
-            if (user==null)
+            var user = await _userRepository.GetUserAsync(id);
+            if (user == null)
             {
                 return NotFound();
             }
+
             return Ok(user);
         }
 
@@ -82,7 +102,7 @@ namespace UserAccount.API.Controllers
         /// edit logged in user
         /// </summary>
         /// <response code="204">Success: User edited </response>
-        [ProducesResponseType( StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         [AuthorizeByIdentityServer(Roles.User + "|" + Roles.Admin)]
         [HttpPatch]
         public async Task<IActionResult> EditUserDetail([FromBody] EditUserModel editUserModel)
