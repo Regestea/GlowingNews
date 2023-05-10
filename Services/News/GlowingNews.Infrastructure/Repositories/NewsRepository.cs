@@ -30,7 +30,7 @@ namespace GlowingNews.Infrastructure.Repositories
                     Id = x.Id,
                     UserId = x.UserId,
                     UserName = x.UserName,
-                    MediaPath = x.MediaPath,
+                    MediaPath = string.IsNullOrWhiteSpace(x.MediaPath) ? "" : AwsFile.GetUrl(x.MediaPath),
                     MediaType = (MediaTypeDto)x.MediaType,
                     Text = x.Text
                 })
@@ -49,7 +49,7 @@ namespace GlowingNews.Infrastructure.Repositories
                     Id = x.Id,
                     UserId = x.UserId,
                     UserName = x.UserName,
-                    MediaPath = x.MediaPath,
+                    MediaPath = string.IsNullOrWhiteSpace(x.MediaPath) ? "" : AwsFile.GetUrl(x.MediaPath),
                     MediaType = (MediaTypeDto)x.MediaType,
                     Text = x.Text
                 })

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using AWS.Shared.Client.Extensions;
 using AWS.Shared.Client.GrpcServices;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -14,7 +15,7 @@ using UserAccount.Infrastructure.Persistence;
 
 namespace UserAccount.Infrastructure.Repositories
 {
-    public class UserRepository: IUserRepository
+    public class UserRepository : IUserRepository
     {
         private UserAccountContext _context;
         private AwsGrpcService _awsGrpcService;
@@ -27,7 +28,7 @@ namespace UserAccount.Infrastructure.Repositories
 
         public async Task<UserDto?> GetUserAsync(Guid userId)
         {
-            var user=await _context.Users.SingleOrDefaultAsync(x => x.Id == userId);
+            var user = await _context.Users.SingleOrDefaultAsync(x => x.Id == userId);
             if (user == null) return null;
 
             var userModel = new UserDto()
@@ -40,6 +41,18 @@ namespace UserAccount.Infrastructure.Repositories
             };
 
             return userModel;
+        }
+
+        public async Task<List<UserDto>?> SearchUserAsync(string userName)
+        {
+            var users = await _context.Users.Where(x => x.Name == userName).Select(x => new UserDto()
+            {
+                Id = x.Id,
+                Name = x.Name,
+                Image = string.IsNullOrWhiteSpace(x.Image) ? "" : AwsFile.GetUrl(x.Image)
+            }).ToListAsync();
+
+            return users;
         }
 
         public async Task<Guid> CreateUserAsync(CreateUserDto userModel)
@@ -55,12 +68,12 @@ namespace UserAccount.Infrastructure.Repositories
             return user.Id;
         }
 
-        public async Task EditUserAsync(Guid userId,EditUserModel userModel)
+        public async Task EditUserAsync(Guid userId, EditUserModel userModel)
         {
-            var user=await _context.Users.SingleAsync(x => x.Id == userId);
-            if (userModel.ProfileImageToken !=null)
+            var user = await _context.Users.SingleAsync(x => x.Id == userId);
+            if (userModel.ProfileImageToken != null)
             {
-                var imagePath =await _awsGrpcService.GetObjectPathAsync(userId, userModel.ProfileImageToken);
+                var imagePath = await _awsGrpcService.GetObjectPathAsync(userId, userModel.ProfileImageToken);
 
                 if (!imagePath.FilePath.IsNullOrEmpty())
                 {
@@ -73,12 +86,12 @@ namespace UserAccount.Infrastructure.Repositories
                 }
             }
 
-            if (userModel.About !=null)
+            if (userModel.About != null)
             {
                 user.About = userModel.About;
             }
-            
-            user.ModifiedDate=DateTimeOffset.UtcNow;
+
+            user.ModifiedDate = DateTimeOffset.UtcNow;
             _context.Users.Update(user);
             await _context.SaveChangesAsync();
         }
