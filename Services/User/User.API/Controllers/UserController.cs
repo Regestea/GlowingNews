@@ -35,10 +35,13 @@ namespace UserAccount.API.Controllers
         /// <response code="200">Success: UserDetail</response>
         [ProducesResponseType(typeof(List<UserDto>), StatusCodes.Status200OK)]
         [AuthorizeByIdentityServer(Roles.User + "|" + Roles.Admin)]
-        [HttpGet]
+        [HttpGet("Search")]
         public async Task<IActionResult> SearchUserName([FromQuery] string userName)
         {
-            var users=await _userRepository.SearchUserAsync(userName);
+            var jwtToken = _jwtTokenRepository.GetJwtToken();
+            var userDto = _jwtTokenRepository.ExtractUserDataFromToken(jwtToken);
+
+            var users=await _userRepository.SearchUserAsync(userDto.Id,userName);
 
             return Ok(users);
         }
