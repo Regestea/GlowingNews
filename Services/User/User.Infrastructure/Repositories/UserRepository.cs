@@ -43,14 +43,23 @@ namespace UserAccount.Infrastructure.Repositories
             return userModel;
         }
 
-        public async Task<List<UserDto>?> SearchUserAsync(string userName)
+        public async Task<List<UserSearchDto>?> SearchUserAsync(Guid userId, string userName)
         {
-            var users = await _context.Users.Where(x => x.Name == userName).Select(x => new UserDto()
+            var users = await _context.Users.Where(x => x.Name.Contains(userName) && x.Id != userId).Select(x => new UserSearchDto()
             {
                 Id = x.Id,
                 Name = x.Name,
                 Image = string.IsNullOrWhiteSpace(x.Image) ? "" : AwsFile.GetUrl(x.Image)
             }).ToListAsync();
+
+            var followings = await _context.Follows.Where(x => x.FollowerId == userId).ToListAsync();
+            foreach (var user in users)
+            {
+                if (followings.Any(x=>x.FollowingId==user.Id))
+                {
+                    user.IsFollowed = true;
+                }
+            }
 
             return users;
         }

@@ -7,7 +7,7 @@ namespace UserAccount.Application.Common.Interfaces
     public interface IUserRepository
     {
         Task<UserDto?> GetUserAsync(Guid userId);
-        Task<List<UserDto>?> SearchUserAsync(string userName);
+        Task<List<UserSearchDto>?> SearchUserAsync(Guid userId,string userName);
 
         Task<Guid> CreateUserAsync(CreateUserDto userModel);
 

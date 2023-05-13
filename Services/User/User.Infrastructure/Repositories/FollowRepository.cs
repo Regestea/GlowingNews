@@ -25,14 +25,14 @@ namespace UserAccount.Infrastructure.Repositories
         public async Task<List<FollowingDto>?> FollowingList(Guid userId)
         {
             var followerList = await _context.Follows
-                .Where(x => x.FollowingId == userId)
-                .Include(x => x.Follower)
+                .Where(x => x.FollowerId == userId)
+                .Include(x => x.Following)
                 .Select(x => new FollowingDto()
                 {
                     Id = x.Id,
-                    UserId = x.FollowerId,
-                    UserName = x.Follower.Name,
-                    UserImage = x.Follower.Image
+                    UserId = x.FollowingId,
+                    UserName = x.Following.Name,
+                    UserImage = x.Following.Image
                 })
                 .ToListAsync();
 
@@ -42,14 +42,14 @@ namespace UserAccount.Infrastructure.Repositories
         public async Task<List<FollowerDto>?> FollowerList(Guid userId)
         {
             var followingList = await _context.Follows
-                .Where(x => x.FollowerId == userId)
-                .Include(x => x.Following)
+                .Where(x => x.FollowingId == userId)
+                .Include(x => x.Follower)
                 .Select(x => new FollowerDto()
                 {
                     Id = x.Id,
-                    UserId = x.FollowingId,
-                    UserName = x.Following.Name,
-                    UserImage = x.Following.Image
+                    UserId = x.FollowerId,
+                    UserName = x.Follower.Name,
+                    UserImage = x.Follower.Image
                 })
                 .AsSplitQuery()
                 .ToListAsync();
