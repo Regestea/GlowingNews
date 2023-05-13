@@ -1,0 +1,62 @@
+﻿
+@if (!string.IsNullOrWhiteSpace(ImageUrl)&& !string.IsNullOrWhiteSpace(AvatarStyle))
+{
+    <MudAvatar Image="@ImageUrl" Style="@AvatarStyle" />
+}
+else
+{
+    if (!string.IsNullOrWhiteSpace(AvatarStyle))
+    {
+        <MudAvatar Style="@AvatarStyle">@Letter</MudAvatar>
+
+    }
+}
+
+
+@code {
+    [Parameter]
+    public string? ImageUrl { get; set; }
+
+    [Parameter]
+    public string Letter { get; set; }
+
+    [Parameter]
+    public string? Width { get; set; } 
+
+    [Parameter]
+    public string? Height { get; set; } 
+
+    private string AvatarStyle { get; set; } 
+
+    private string Background { get; set; } 
+
+    
+
+    private Dictionary<string, string> LetterColors = new()
+    {
+        {"A", Colors.Red.Default}, {"B", Colors.Pink.Default}, {"C", Colors.Purple.Default}, {"D", Colors.DeepPurple.Default},
+        {"E", Colors.Indigo.Default}, {"F", Colors.Blue.Default}, {"G", Colors.LightBlue.Default}, {"H", Colors.Cyan.Default}, 
+        {"I", Colors.Teal.Default}, {"J", Colors.Green.Default}, {"K", Colors.Yellow.Default}, {"L", Colors.Amber.Default},
+        {"M", Colors.Orange.Default}, {"N", Colors.DeepOrange.Default}, {"O", Colors.Blue.Default}, {"P", Colors.Yellow.Default},
+        {"Q", Colors.Cyan.Default}, {"R", Colors.Amber.Default}, {"S", Colors.Orange.Default}, {"T", Colors.Cyan.Default},
+        {"U", Colors.Amber.Default}, {"V", Colors.Cyan.Default}, {"W", Colors.LightBlue.Default}, {"X", Colors.Orange.Default},
+        {"Y", Colors.Cyan.Default}, {"Z", Colors.LightBlue.Default}
+    };
+
+    protected override void OnInitialized()
+    {
+        Background = string.IsNullOrWhiteSpace(ImageUrl) ? GetColorByLetter(Letter) : "none";
+        AvatarStyle = $"width: {Width}; height: {Height}; background: {Background}";
+    }
+
+
+    string GetColorByLetter(string letter)
+    {
+        if (LetterColors.TryGetValue(letter, out string color))
+        {
+            return color;
+        }
+        return "Colors.Red.Default";
+    }
+
+}

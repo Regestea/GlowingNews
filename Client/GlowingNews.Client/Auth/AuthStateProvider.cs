@@ -1,9 +1,9 @@
 ﻿using Blazored.LocalStorage;
 using Microsoft.AspNetCore.Components.Authorization;
-using System.Net.Http.Headers;
 using System.Security.Claims;
 using System.Text.Json;
-using GlowingNews.Client.Enums;
+using System.IdentityModel.Tokens.Jwt;
+using GlowingNews.Client.DTOs.User;
 
 namespace GlowingNews.Client.Auth
 {
@@ -20,7 +20,7 @@ namespace GlowingNews.Client.Auth
         public override async Task<AuthenticationState> GetAuthenticationStateAsync()
         {
             string authToken = await _localStorageService.GetItemAsStringAsync("authToken");
-
+            
             var identity = new ClaimsIdentity();
 
             if (!string.IsNullOrEmpty(authToken))
@@ -42,6 +42,25 @@ namespace GlowingNews.Client.Auth
             NotifyAuthenticationStateChanged(Task.FromResult(state));
 
             return state;
+        }
+
+        public async Task<UserDto> ExtractUserDataFromLocalToken()
+        {
+            var authToken = await _localStorageService.GetItemAsStringAsync("authToken");
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var jwtToken = tokenHandler.ReadJwtToken(authToken);
+            var userId = jwtToken.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+            var userName = jwtToken.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Name)?.Value;
+            var email = jwtToken.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email)?.Value;
+
+            var user = new UserDto()
+            {
+                Id = Guid.Parse(userId!),
+                Name = userName!,
+                Email = email!
+            };
+  
+            return user;
         }
 
         private byte[] ParseBase64WithoutPadding(string base64)

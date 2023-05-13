@@ -1,10 +1,11 @@
 ﻿@page "/Login"
 @using GlowingNews.Client.Models.Auth
 @using GlowingNews.Client.Services.Interfaces
+@using GlowingNews.Client.Auth
 @inject IAuthService AuthService
 @inject Blazored.LocalStorage.ILocalStorageService LocalStorage
 @inject NavigationManager NavigationManager;
-@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject AuthStateProvider AuthStateProvider
 
 <EditForm EditContext="editContext" OnValidSubmit="OnValidSubmit">
     <DataAnnotationsValidator/>
@@ -63,6 +64,14 @@
         messageStore = new(editContext);
     }
 
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        var userData = await AuthStateProvider.ExtractUserDataFromLocalToken();
+        Console.WriteLine(userData.Email);
+        Console.WriteLine(userData.Id);
+        Console.WriteLine(userData.Name);
+    }
+
     private void ClearErrors()
     {
         messageStore?.Clear();
@@ -86,7 +95,8 @@
     //success login set token redirect to home hide login and register link and show logout
         if (result.IsT0)
         {
-            await LocalStorage.SetItemAsync("authToken", result.AsT0.Value);
+            Console.WriteLine(result.AsT0.Value.Token);
+            await LocalStorage.SetItemAsStringAsync("authToken", result.AsT0.Value.Token);
             NavigationManager.NavigateTo("/");
         }
 
@@ -108,7 +118,7 @@
             }
             editContext?.NotifyValidationStateChanged();
         }
-        await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        await AuthStateProvider.GetAuthenticationStateAsync();
     }
 
 }

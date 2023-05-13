@@ -1,0 +1,48 @@
+﻿@page "/UserAccount/Detail/Edit"
+
+<MudGrid Class="animate__animated animate__fadeIn">
+<MudItem xs="8">
+    <MudCard Class="visibility border d-flex flex-column align-center pa-6 ">
+        <MudAvatar Image="@ImageUri" Style="width: 40%; height: 45%;min-height: 10em;min-width: 10em;background: none" />
+            <MudFileUpload T="IBrowserFile" FilesChanged="LoadImage">
+            <ButtonTemplate>
+                <MudFab HtmlTag="label"
+                        Color="Color.Secondary"
+                        Icon="@Icons.Material.Filled.Image"
+                        Label="Change Profile Image"
+                        for="@context" />
+            </ButtonTemplate>
+        </MudFileUpload>
+          <MudCardContent>
+              <MudTextField T="string" Label="About User" Variant="Variant.Outlined" Text="Test text for this content" Lines="3" />
+
+        </MudCardContent>
+        <MudCardActions >
+
+ 
+            <MudNavLink Style="width: 15em" Class="ma-4" Href="UserAccount" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Brush">Discard Changes</MudNavLink>
+            <MudButton Class="ma-4" Variant="Variant.Filled" StartIcon="@Icons.Material.Outlined.Save" Color="Color.Success">Save</MudButton>
+        </MudCardActions>
+    </MudCard>
+</MudItem>
+</MudGrid>
+
+@code {
+    private string? ImageUri = "/gif/profile/user.gif";
+
+    public async Task LoadImage(IBrowserFile file)
+    {
+        var image = await file.RequestImageFileAsync("image/png,image/gif,image/jpg,image/jpeg,", 400, 400);
+
+        using Stream imageStream = image.OpenReadStream(1024 * 1024 * 15);
+        
+        using MemoryStream ms = new();
+    //copy imageStream to Memory stream
+        await imageStream.CopyToAsync(ms);
+
+    //convert stream to base64
+        ImageUri = $"data:{file.ContentType};base64,{Convert.ToBase64String(ms.ToArray())}";
+        StateHasChanged();
+
+    }
+}
