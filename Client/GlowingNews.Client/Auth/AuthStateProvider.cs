@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Components.Authorization;
 using System.Security.Claims;
 using System.Text.Json;
 using System.IdentityModel.Tokens.Jwt;
-using GlowingNews.Client.DTOs;
+using GlowingNews.Client.DTOs.User;
 
 namespace GlowingNews.Client.Auth
 {

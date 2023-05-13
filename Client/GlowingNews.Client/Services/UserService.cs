@@ -6,6 +6,7 @@ using GlowingNews.Client.responses.Base;
 using GlowingNews.Client.Services.Interfaces;
 using OneOf.Types;
 using System.Net;
+using GlowingNews.Client.DTOs.User;
 
 namespace GlowingNews.Client.Services
 {
@@ -29,6 +30,18 @@ namespace GlowingNews.Client.Services
             var user = await JsonConverter.ToObject<User>(response.Content);
 
             return new Success<User>(user);
+        }
+
+        public async Task<ReadResponse<List<UserSearchDto>>> SearchUser(string userName)
+        {
+            await _httpClient.AddAuthHeader(_localStorageService);
+
+            var response = await _httpClient.SendRequestAsync($"User/Search?userName={userName}", HttpMethod.Get);
+            Console.WriteLine(response.Content);
+            Console.WriteLine(response.StatusCode);
+            var user = await JsonConverter.ToObject<List<UserSearchDto>>(response.Content);
+
+            return new Success<List<UserSearchDto>>(user);
         }
 
         public async Task<ReadResponse<User>> GetUser(Guid userId)

@@ -1,4 +1,5 @@
-﻿@inherits LayoutComponentBase
+﻿@using GlowingNews.Client.Shared.Components.AppBar
+@inherits LayoutComponentBase
 @inject Blazored.LocalStorage.ILocalStorageService LocalStorage
 @inject NavigationManager NavigationManager;
 
@@ -9,6 +10,10 @@
 <MudLayout>
     <MudAppBar Elevation="0" Class="nav-border visibility" >
         <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())"/>
+       
+        <Search/>
+
+       
         <MudSpacer/>
 
         <MudAvatar Image="/favicon.png"/>

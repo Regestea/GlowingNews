@@ -1,13 +1,13 @@
 ﻿@inject IFollowService FollowService
-
 @if (IsFollow)
-{
-    <MudButton @onclick="FollowUser" Variant="Variant.Filled" Color="Color.Success">Follow</MudButton>
-}
-else
-{
-    <MudButton @onclick="UnFollowUser" Variant="Variant.Filled" Color="Color.Secondary">UnFollow</MudButton>
-}
+    {
+        <MudButton @onclick="FollowUser" Variant="Variant.Filled" Color="Color.Success">Follow</MudButton>
+    }
+    else
+    {
+        <MudButton @onclick="UnFollowUser" Variant="Variant.Filled" Color="Color.Secondary">UnFollow</MudButton>
+    }
+
 
 @code {
     [Parameter]
@@ -20,13 +20,13 @@ else
 
     private async Task FollowUser()
     {
-        //await FollowService.Follow(UserId);
+        await FollowService.Follow(UserId);
         IsFollow = false;
     }
 
     private async Task UnFollowUser()
     {
-        //await FollowService.UnFollow(UserId);
+        await FollowService.UnFollow(UserId);
         IsFollow = true;
     }
 

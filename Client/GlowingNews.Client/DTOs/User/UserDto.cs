@@ -1,4 +1,4 @@
-﻿namespace GlowingNews.Client.DTOs
+﻿namespace GlowingNews.Client.DTOs.User
 {
     public class UserDto
     {

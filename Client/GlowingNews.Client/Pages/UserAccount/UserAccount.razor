@@ -1,27 +1,51 @@
 ﻿@page "/UserAccount"
+@using GlowingNews.Client.Shared.Components.AppBar
 @using GlowingNews.Client.Shared.Components.UserAccount
+@using GlowingNews.Client.DTOs.User
 @inject IFollowService FollowService
 @inject AuthStateProvider AuthStateProvider
+@inject IUserService UserService
 
 <MudGrid Class="animate__animated animate__fadeIn">
     <MudItem xs="8">
-        <MudCard Class="visibility border d-flex flex-column align-center pa-6 ">
-            <MudAvatar Image="/gif/profile/user.gif" Style="width: 40%; height: 45%; background: none" />
-            <MudCardContent>
-                <MudText Typo="Typo.h5">About User</MudText>
-                <MudText Typo="Typo.body2">Old paint found on a stone house door.</MudText>
-                <MudText Typo="Typo.body2">This photo was taken in a small village in Istra Croatia.</MudText>
-            </MudCardContent>
-            <MudCardActions>
-                <MudLink Href="/UserAccount/Detail/Edit" Class="ma-4" Variant="Variant.Filled" StartIcon="@Icons.Material.Outlined.Edit" Color="Color.Info">Edit details </MudLink>
-                <MudLink Href="/UserAccount/Detail/Edit" Class="ma-4" Variant="Variant.Filled" StartIcon="@Icons.Material.Outlined.Edit" Color="Color.Info">My News </MudLink>
-            </MudCardActions>
+
+        <MudCard Class="animate__animated animate__fadeIn visibility border d-flex flex-column align-center pa-6 ">
+            @if (user != null)
+            {
+                <div class="animate__animated animate__fadeIn">
+                    <UserAvatar ImageUrl="@user.Image" Letter="@user.Name.Substring(0, 1).ToUpper()" Width="7em" Height="7em" />
+
+                </div>
+                <MudCardContent Class="animate__animated animate__fadeIn">
+                    <MudText Typo="Typo.h5">@user.Name</MudText>
+                    <MudText Typo="Typo.h6">About User</MudText>
+                    @if (string.IsNullOrWhiteSpace(user.About))
+                    {
+                        <MudText Typo="Typo.body2">🗒️🗒️🗒️ There is nothing</MudText>
+                    }
+                    else
+                    {
+                        <MudText Typo="Typo.body2">@user.About</MudText>
+                    }
+
+                </MudCardContent>
+                <MudCardActions>
+                    <MudLink Href="/UserAccount/Detail/Edit" Class="ma-4" Variant="Variant.Filled" StartIcon="@Icons.Material.Outlined.Edit" Color="Color.Info">Edit details </MudLink>
+                    <MudLink Href="/UserAccount/Detail/Edit" Class="ma-4" Variant="Variant.Filled" StartIcon="@Icons.Material.Outlined.Edit" Color="Color.Info">My News </MudLink>
+                </MudCardActions>
+            }
+            else
+            {
+                <MudCardHeader Class=" d-flex flex-column align-center">
+                    <CardHeaderContent>
+                        <MudProgressCircular Color="Color.Secondary" Size="Size.Large" Indeterminate="true" />
+                    </CardHeaderContent>
+                </MudCardHeader>
+            }
         </MudCard>
     </MudItem>
 
     <MudItem xs="4" Class="visibility border">
-
-
         <MudTabs Elevation="4" Rounded="true" Centered="true" Color="@Color.Primary">
             <MudTabPanel Text="Followings">
 
@@ -42,13 +66,15 @@
                         {
                             <MudCardHeader Class="animate__animated animate__backInRight" Style="@AnimationDelay(Followings.IndexOf(Following))">
                                 <CardHeaderAvatar>
-                                    <MudAvatar Color="Color.Secondary">@Following.UserName.Substring(0, 1).ToUpper()</MudAvatar>
+                                    <UserAvatar Letter="@Following.UserName.Substring(0,1).ToUpper()" />
                                 </CardHeaderAvatar>
                                 <CardHeaderContent>
                                     <MudText Typo="Typo.body1">@Following.UserName</MudText>
                                 </CardHeaderContent>
                                 <CardHeaderActions>
-                                    <Follow UserId="Following.UserId" IsFollow="false"></Follow>
+                                    <div style="margin-top: 0.7em">
+                                        <Follow UserId="Following.UserId" IsFollow="false"></Follow>
+                                    </div>
                                 </CardHeaderActions>
                             </MudCardHeader>
 
@@ -83,7 +109,7 @@
                     {
                         <MudCardHeader Class="animate__animated animate__backInRight" Style="@AnimationDelay(Followers.IndexOf(follower))">
                             <CardHeaderAvatar>
-                                <MudAvatar Color="Color.Primary">@follower.UserName.Substring(0, 1).ToUpper()</MudAvatar>
+                                <UserAvatar Letter="@follower.UserName.Substring(0,1).ToUpper()" />
                             </CardHeaderAvatar>
                             <CardHeaderContent>
                                 <MudText Typo="Typo.body1">@follower.UserName</MudText>
@@ -115,14 +141,15 @@
 @code {
     List<Follower>? Followers = new List<Follower>();
     List<Following>? Followings = new List<Following>();
-    UserDto user;
+    User user;
 
     private bool FollowerLoading = true;
     private bool FollowingLoading = true;
 
     protected override async Task OnInitializedAsync()
     {
-        user =await AuthStateProvider.ExtractUserDataFromLocalToken();
+        var userResponse = await UserService.GetUser();
+        user = userResponse.AsT0.Value;
 
         var followersResult = await FollowService.GetFollowerList(user.Id);
 
