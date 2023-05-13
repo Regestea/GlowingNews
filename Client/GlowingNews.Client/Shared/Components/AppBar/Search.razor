@@ -1,0 +1,57 @@
+﻿@using GlowingNews.Client.DTOs.User
+@using GlowingNews.Client.Shared.Components.UserAccount
+@using Microsoft.AspNetCore.Components.Web
+@using System.Collections.Generic
+@inject IUserService UserService
+
+<div style="position: relative; margin-left: 10%;">
+    <div style="position: fixed; margin: -1em; width: 40%;">
+
+        <input placeholder="Serch 🔎" class="visibility border" style="padding: 8px; width: 100%; margin-top: -6em; color: dodgerblue; " type="text" @bind-value="searchTerm" @oninput="HandleInput"/>
+        @if (userSearchResult.Count >=1)
+        {
+            <ul class="visibility border" style="overflow: scroll; max-height: 40em; margin-top: 0.5em;">
+                @foreach (var user in userSearchResult)
+                {
+                    <MudCardHeader Style="margin: 0.5em;padding: 1.5em" Class="animate__animated animate__backInRight">
+                        <CardHeaderAvatar>
+                            <UserAvatar ImageUrl="@user.Image" Letter="@user.Name.Substring(0, 1).ToUpper()" />
+                        </CardHeaderAvatar>
+                        <CardHeaderContent>
+                            <MudText Typo="Typo.body1">@user.Name</MudText>
+                        </CardHeaderContent>
+                        <CardHeaderActions>
+                            <div style="margin-top: 0.7em">
+                                <Follow UserId="@user.Id" IsFollow="true"></Follow>
+                            </div>
+                        </CardHeaderActions>
+                    </MudCardHeader>
+                }
+            </ul>
+        }
+     
+    </div>
+</div>
+
+@code {
+    private string searchTerm = "";
+    private List<UserSearchDto> userSearchResult=new ();
+   
+
+    private async Task HandleInput(ChangeEventArgs e)
+    {
+        searchTerm = e.Value.ToString();
+        Console.WriteLine(searchTerm);
+        if (searchTerm.StartsWith("@")&&searchTerm.Length>=2)
+        {
+            var result= await UserService.SearchUser(searchTerm.Replace("@", ""));
+            userSearchResult = result.AsT0.Value;
+        }
+        else
+        {
+            userSearchResult.Clear();
+        }
+    }
+
+    
+}

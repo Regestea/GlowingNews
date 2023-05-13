@@ -9,13 +9,14 @@ namespace GlowingNews.Client.Extensions
             ILocalStorageService localStorageService)
         {
             var authToken = await localStorageService.GetItemAsStringAsync("authToken");
-
+            //var normalizedToken = authToken.Replace("\"", "");
+           
             if (!string.IsNullOrEmpty(authToken))
             {
                 try
                 {
                     httpClient.DefaultRequestHeaders.Authorization =
-                        new AuthenticationHeaderValue("Bearer", authToken.Replace("\"", ""));
+                        new AuthenticationHeaderValue("Bearer", authToken);
                 }
                 catch
                 {

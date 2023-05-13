@@ -117,7 +117,7 @@ namespace GlowingNews.IdentityServer.Controllers
             var tokenString = new JwtSecurityTokenHandler().WriteToken(tokenOption);
 
 
-            return Ok(new { token = tokenString });
+            return Ok(new { Token = tokenString });
         }
     }
 }

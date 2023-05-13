@@ -1,0 +1,170 @@
+﻿@page "/UserAccount"
+
+@inject IFollowService FollowService
+@inject AuthStateProvider AuthStateProvider
+@inject IUserService UserService
+
+<MudGrid Class="animate__animated animate__fadeIn">
+    <MudItem xs="8">
+
+        <MudCard Class="animate__animated animate__fadeIn visibility border d-flex flex-column align-center pa-6 ">
+            @if (user != null)
+            {
+                <div class="animate__animated animate__fadeIn">
+                    <UserAvatar ImageUrl="@user.Image" Letter="@user.Name.Substring(0, 1).ToUpper()" Width="7em" Height="7em" />
+
+                </div>
+                <MudCardContent Class="animate__animated animate__fadeIn">
+                    <MudText Typo="Typo.h5">@user.Name</MudText>
+                    <MudText Typo="Typo.h6">About User</MudText>
+                    @if (string.IsNullOrWhiteSpace(user.About))
+                    {
+                        <MudText Typo="Typo.body2">🗒️🗒️🗒️ There is nothing</MudText>
+                    }
+                    else
+                    {
+                        <MudText Typo="Typo.body2">@user.About</MudText>
+                    }
+
+                </MudCardContent>
+                <MudCardActions>
+                    <MudLink Href="/UserAccount/Detail/Edit" Class="ma-4" Variant="Variant.Filled" StartIcon="@Icons.Material.Outlined.Edit" Color="Color.Info">Edit details </MudLink>
+                    <MudLink Href="/UserAccount/Detail/Edit" Class="ma-4" Variant="Variant.Filled" StartIcon="@Icons.Material.Outlined.Edit" Color="Color.Info">My News </MudLink>
+                </MudCardActions>
+            }
+            else
+            {
+                <MudCardHeader Class=" d-flex flex-column align-center">
+                    <CardHeaderContent>
+                        <MudProgressCircular Color="Color.Secondary" Size="Size.Large" Indeterminate="true" />
+                    </CardHeaderContent>
+                </MudCardHeader>
+            }
+        </MudCard>
+    </MudItem>
+
+    <MudItem xs="4" Class="visibility border">
+        <MudTabs Elevation="4" Rounded="true" Centered="true" Color="@Color.Primary">
+            <MudTabPanel Text="Followings">
+
+                <div Style="overflow: scroll; height: 35em">
+
+                    @if (FollowingLoading)
+                    {
+                        <MudCardHeader Class=" d-flex flex-column align-center">
+                            <CardHeaderContent>
+                                <MudProgressCircular Color="Color.Secondary" Size="Size.Large" Indeterminate="true" />
+                            </CardHeaderContent>
+                        </MudCardHeader>
+                    }
+
+                    @if (Followings != null)
+                    {
+                        @foreach (var Following in Followings)
+                        {
+                            <MudCardHeader Class="animate__animated animate__backInRight" Style="@AnimationDelay(Followings.IndexOf(Following))">
+                                <CardHeaderAvatar>
+                                    <UserAvatar Letter="@Following.UserName.Substring(0,1).ToUpper()" />
+                                </CardHeaderAvatar>
+                                <CardHeaderContent>
+                                    <MudText Typo="Typo.body1">@Following.UserName</MudText>
+                                </CardHeaderContent>
+                                <CardHeaderActions>
+                                    <div style="margin-top: 0.7em">
+                                        <Follow UserId="Following.UserId" IsFollow="false"></Follow>
+                                    </div>
+                                </CardHeaderActions>
+                            </MudCardHeader>
+
+                        }
+                    }
+
+                    @if (Followings.Count == 0 && FollowingLoading == false)
+                    {
+                        <MudCardHeader>
+                            <CardHeaderContent>
+                                <MudText Typo="Typo.body1">Oops. Looks like You did not follow anyone</MudText>
+                            </CardHeaderContent>
+                        </MudCardHeader>
+                    }
+
+                </div>
+            </MudTabPanel>
+
+            <MudTabPanel Text="Followers">
+
+                @if (FollowerLoading)
+                {
+                    <MudCardHeader Class=" d-flex flex-column align-center">
+                        <CardHeaderContent>
+                            <MudProgressCircular Color="Color.Secondary" Size="Size.Large" Indeterminate="true" />
+                        </CardHeaderContent>
+                    </MudCardHeader>
+                }
+                @if (Followers != null)
+                {
+                    @foreach (var follower in Followers)
+                    {
+                        <MudCardHeader Class="animate__animated animate__backInRight" Style="@AnimationDelay(Followers.IndexOf(follower))">
+                            <CardHeaderAvatar>
+                                <UserAvatar Letter="@follower.UserName.Substring(0,1).ToUpper()" />
+                            </CardHeaderAvatar>
+                            <CardHeaderContent>
+                                <MudText Typo="Typo.body1">@follower.UserName</MudText>
+                            </CardHeaderContent>
+                        </MudCardHeader>
+                    }
+                }
+
+                @if (Followers.Count == 0 && FollowerLoading == false)
+                {
+                    <MudCardHeader>
+                        <CardHeaderContent>
+                            <MudText Typo="Typo.body1">Oops. Looks like You don't have any follower</MudText>
+                        </CardHeaderContent>
+                    </MudCardHeader>
+                }
+
+
+            </MudTabPanel>
+
+        </MudTabs>
+
+
+    </MudItem>
+
+</MudGrid>
+
+
+@code {
+    List<Follower>? Followers = new List<Follower>();
+    List<Following>? Followings = new List<Following>();
+    User user;
+
+    private bool FollowerLoading = true;
+    private bool FollowingLoading = true;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var userResponse = await UserService.GetUser();
+        user = userResponse.AsT0.Value;
+
+        var followersResult = await FollowService.GetFollowerList(user.Id);
+
+        var followingsResult = await FollowService.GetFollowingList(user.Id);
+
+        Followers = followersResult.AsT0.Value;
+
+        Followings = followingsResult.AsT0.Value;
+
+        FollowerLoading = false;
+        FollowingLoading = false;
+
+    }
+
+    private string AnimationDelay(int index)
+    {
+        double i = index * 0.2;
+        return $"animation-delay: {i}s";
+    }
+}
