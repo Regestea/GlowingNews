@@ -4,16 +4,15 @@ using OneOf.Types;
 
 namespace GlowingNews.Client.responses.Base
 {
-    public class CreateResponse : OneOfBase<Success<string>, Success<Guid>, List<ValidationFailedDto>, Error<string>>
+    public class CreateResponse<TResponse> : OneOfBase<Success<TResponse>, Success<Guid>, List<ValidationFailedDto>, Error<string>>
     {
-        protected CreateResponse(OneOf<Success<string>, Success<Guid>, List<ValidationFailedDto>, Error<string>> input)
+        protected CreateResponse(OneOf<Success<TResponse>, Success<Guid>, List<ValidationFailedDto>, Error<string>> input)
             : base(input)
         {
         }
 
-        public static implicit operator CreateResponse(Success<string> _) => new(_);
-        public static implicit operator CreateResponse(Error<string> _) => new(_);
-        public static implicit operator CreateResponse(Success<Guid> _) => new(_);
-        public static implicit operator CreateResponse(List<ValidationFailedDto> _) => new(_);
+        public static implicit operator CreateResponse<TResponse>(Success<TResponse> _) => new(_);
+        public static implicit operator CreateResponse<TResponse>(Error<string> _) => new(_);
+        public static implicit operator CreateResponse<TResponse>(List<ValidationFailedDto> _) => new(_);
     }
 }

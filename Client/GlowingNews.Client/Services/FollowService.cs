@@ -19,7 +19,7 @@ namespace GlowingNews.Client.Services
         }
 
 
-        public async Task<CreateResponse> Follow(Guid followingId)
+        public async Task<CreateResponse<Guid>> Follow(Guid followingId)
         {
             await _httpClient.AddAuthHeader(_localStorageService);
 

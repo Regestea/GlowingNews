@@ -9,7 +9,7 @@ namespace GlowingNews.Client.Services.Interfaces
     public interface IAuthService
     {
         // Register return id
-        Task<CreateResponse> Register(RegisterModel request);
+        Task<CreateResponse<Guid>> Register(RegisterModel request);
 
         // Login return string token
         Task<ReadResponse<JwtToken>> Login(LoginModel request);
