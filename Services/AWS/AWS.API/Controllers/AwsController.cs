@@ -1,5 +1,6 @@
 ﻿using Amazon.S3;
 using AWS.Application.Common.Interfaces;
+using AWS.Application.DTOs;
 using AWS.Application.Models;
 using AWS.Domain.Entities;
 using AWS.Domain.Enums;
@@ -32,8 +33,8 @@ namespace AWS.API.Controllers
         /// Upload user profile
         /// </summary>
         /// <response code="200">Success: Uploaded file token</response>
-        [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
-        [HttpPost("/UserProfileImage")]
+        [ProducesResponseType(typeof(TokenDto), StatusCodes.Status200OK)]
+        [HttpPost("UserProfileImage")]
         [AuthorizeByIdentityServer(Roles.User+"|"+Roles.Admin)]
         public async Task<IActionResult> UserProfileImage([FromForm] ImageUploadModel imageUploadModel)
         {
@@ -62,7 +63,7 @@ namespace AWS.API.Controllers
             await _awsIndexDbContext.AwsFiles.AddAsync(awsFile);
             await _awsIndexDbContext.SaveChangesAsync();
 
-            return Ok(awsFile.Token);
+            return Ok(new TokenDto(){Token = awsFile.Token});
         }
 
 
@@ -70,8 +71,8 @@ namespace AWS.API.Controllers
         /// Upload user news image
         /// </summary>
         /// <response code="200">Success: Uploaded file token</response>
-        [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
-        [HttpPost("/NewsImage")]
+        [ProducesResponseType(typeof(TokenDto), StatusCodes.Status200OK)]
+        [HttpPost("NewsImage")]
         [AuthorizeByIdentityServer(Roles.User + "|" + Roles.Admin)]
         public async Task<IActionResult> NewsImage([FromForm] ImageUploadModel imageUploadModel)
         {
@@ -100,7 +101,7 @@ namespace AWS.API.Controllers
             await _awsIndexDbContext.AwsFiles.AddAsync(awsFile);
             await _awsIndexDbContext.SaveChangesAsync();
 
-            return Ok(awsFile.Token);
+            return Ok(new TokenDto() { Token = awsFile.Token });
         }
 
 
@@ -108,8 +109,8 @@ namespace AWS.API.Controllers
         /// Upload news video
         /// </summary>
         /// <response code="200">Success: Uploaded file token</response>
-        [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
-        [HttpPost("/NewsVideo")]
+        [ProducesResponseType(typeof(TokenDto), StatusCodes.Status200OK)]
+        [HttpPost("NewsVideo")]
         [AuthorizeByIdentityServer(Roles.User + "|" + Roles.Admin)]
         public async Task<IActionResult> NewsVideo([FromForm] VideoUploadModel videoUploadModel)
         {
@@ -138,7 +139,7 @@ namespace AWS.API.Controllers
             await _awsIndexDbContext.AwsFiles.AddAsync(awsFile);
             await _awsIndexDbContext.SaveChangesAsync();
 
-            return Ok(awsFile.Token);
+            return Ok(new TokenDto() { Token = awsFile.Token });
         }
     }
 }
