@@ -25,7 +25,7 @@ namespace GlowingNews.Client.Services
         }
 
 
-        public async Task<CreateResponse> Register(RegisterModel request)
+        public async Task<CreateResponse<Guid>> Register(RegisterModel request)
         {
             var requestStringContent = await JsonConverter.ToStringContent(request);
 

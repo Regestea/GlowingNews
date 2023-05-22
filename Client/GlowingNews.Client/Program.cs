@@ -22,10 +22,11 @@ builder.Services.AddScoped< AuthStateProvider>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IFollowService, FollowService>();
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IUploadService, UploadService>();
 
 
 builder.Services.AddHttpClient(nameof(HttpClients.Aws),
-    client => { client.BaseAddress = new Uri("https://localhost:7268/"); });
+    client => { client.BaseAddress = new Uri("https://localhost:7268/api/"); });
 
 builder.Services.AddHttpClient(nameof(HttpClients.IdentityServer),
     client => { client.BaseAddress = new Uri("https://localhost:7126/"); });

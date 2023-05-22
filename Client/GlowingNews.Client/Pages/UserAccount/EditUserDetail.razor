@@ -1,36 +1,100 @@
-﻿@page "/UserAccount/Detail/Edit"
+﻿@page "/UserAccount/Edit"
+@using GlowingNews.Client.Models.User
+@using GlowingNews.Client.Models.File
+@using GlowingNews.Client.DTOs.Response
+@inject IUserService UserService
+@inject IUploadService UploadService
+@inject NavigationManager NavigationManager
 
 <MudGrid Class="animate__animated animate__fadeIn">
-<MudItem xs="8">
-    <MudCard Class="visibility border d-flex flex-column align-center pa-6 ">
-        <MudAvatar Image="@ImageUri" Style="width: 40%; height: 45%;min-height: 10em;min-width: 10em;background: none" />
-            <MudFileUpload T="IBrowserFile" FilesChanged="LoadImage">
-            <ButtonTemplate>
-                <MudFab HtmlTag="label"
-                        Color="Color.Secondary"
-                        Icon="@Icons.Material.Filled.Image"
-                        Label="Change Profile Image"
-                        for="@context" />
-            </ButtonTemplate>
-        </MudFileUpload>
-          <MudCardContent>
-              <MudTextField T="string" Label="About User" Variant="Variant.Outlined" Text="Test text for this content" Lines="3" />
+    <MudItem xs="8">
+        <MudCard Class="visibility border d-flex flex-column align-center pa-6 ">
+        @if (user != null)
+        {
+                <UserAvatar ImageUrl="@user.Image" Letter="@user.Name.Substring(0, 1).ToUpper()" Width="12em" Height="12em" />
 
-        </MudCardContent>
-        <MudCardActions >
+                <MudProgressLinear Color="Color.Success" Value="@progress.Percentage" Class="my-7"/>
 
- 
-            <MudNavLink Style="width: 15em" Class="ma-4" Href="UserAccount" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Brush">Discard Changes</MudNavLink>
-            <MudButton Class="ma-4" Variant="Variant.Filled" StartIcon="@Icons.Material.Outlined.Save" Color="Color.Success">Save</MudButton>
-        </MudCardActions>
-    </MudCard>
-</MudItem>
+                <MudSpacer/>
+
+                <MudFileUpload  T="IBrowserFile" FilesChanged="UploadImage">
+                    <ButtonTemplate>
+                        <MudFab HtmlTag="label"
+                                Color="Color.Secondary"
+                                Icon="@Icons.Material.Filled.Image"
+                                Label="Change Profile Image"
+                                for="@context"/>
+                    </ButtonTemplate>
+                    
+                </MudFileUpload>
+
+                <MudCardContent>
+                    <MudTextField @bind-Value="EditUserModel.About" T="string" Label="About User" Variant="Variant.Outlined" Text="@EditUserModel.About" Lines="3" />
+                </MudCardContent>
+                <MudCardActions >
+                    <MudNavLink Style="width: 15em" Class="ma-4" Href="UserAccount" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Brush">Discard Changes</MudNavLink>
+                    <MudButton @onclick="Save" Class="ma-4" Disabled="@disableButton" Variant="Variant.Filled" StartIcon="@Icons.Material.Outlined.Save" Color="Color.Success">Save</MudButton>
+                </MudCardActions>
+         
+        }
+        else
+        {
+            <MudCardHeader Class=" d-flex flex-column align-center">
+                <CardHeaderContent>
+                    <MudProgressCircular Color="Color.Secondary" Size="Size.Large" Indeterminate="true" />
+                </CardHeaderContent>
+            </MudCardHeader>
+        }
+        </MudCard>
+    </MudItem>
 </MudGrid>
 
 @code {
-    private string? ImageUri = "/gif/profile/user.gif";
+    private bool disableButton = false;
+    private User user;
+    private EditUserModel EditUserModel = new();
+    private UploadPercentageDto progress=new UploadPercentageDto()
+    {
+        Percentage = 0,
+        Uploaded = 0
+    };
 
-    public async Task LoadImage(IBrowserFile file)
+    private async Task Save()
+    {
+        var response = await UserService.EditUser(EditUserModel);
+
+        if (response.IsT0)
+        {
+            NavigationManager.NavigateTo("/UserAccount");
+        }
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var userResponse = await UserService.GetUser();
+        user = userResponse.AsT0.Value;
+        EditUserModel.About = user.About;
+    }
+
+    private async Task UploadImage(IBrowserFile file)
+    {
+        await LoadImage(file);
+        disableButton = true;
+
+        var response = await UploadService.UserProfileImage(new ImageUploadModel() {Image = file},onProgress =>
+        {
+            progress = onProgress;
+            StateHasChanged();
+        });
+
+        if (response.IsT0)
+        {
+            disableButton = false;
+            EditUserModel.ProfileImageToken = response.AsT0.Value.Token;
+        }
+    }
+
+    private async Task LoadImage(IBrowserFile file)
     {
         var image = await file.RequestImageFileAsync("image/png,image/gif,image/jpg,image/jpeg,", 400, 400);
 
@@ -41,8 +105,8 @@
         await imageStream.CopyToAsync(ms);
 
     //convert stream to base64
-        ImageUri = $"data:{file.ContentType};base64,{Convert.ToBase64String(ms.ToArray())}";
+        user.Image = $"data:{file.ContentType};base64,{Convert.ToBase64String(ms.ToArray())}";
         StateHasChanged();
-
     }
+
 }
