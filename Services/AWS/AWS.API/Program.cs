@@ -26,9 +26,20 @@ builder.Services.AddSwagger(options =>
         options.Version = "v1";
     }
 );
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAllOrigins",
+        builder =>
+        {
+            builder
+                .AllowAnyOrigin()
+                .AllowAnyHeader()
+                .AllowAnyMethod();
+        });
+});
 
 var app = builder.Build();
-
+app.UseCors("AllowAllOrigins");
 app.MapGrpcService<AwsGrpcService>();
 
 
