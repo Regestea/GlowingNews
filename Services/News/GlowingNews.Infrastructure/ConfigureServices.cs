@@ -11,7 +11,7 @@ namespace GlowingNews.Infrastructure
     {
         public static IServiceCollection AddInfrastructureServices(this IServiceCollection services, IConfiguration configuration)
         {
-            services.AddEntityFrameworkNpgsql().AddDbContext<NewsContext>(
+            services.AddDbContext<NewsContext>(
                 o => o.UseNpgsql(configuration.GetSection("DatabaseSettings:ConnectionString").Value));
 
             services.AddScoped<INewsRepository, NewsRepository>();
