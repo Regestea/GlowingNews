@@ -20,10 +20,17 @@ namespace GlowingNews.Infrastructure.Repositories
             _newsContext = newsContext;
         }
 
-        public async Task<NewsDto?> LastNewsAsync(Guid userId)
+        public async Task<List<NewsDto>?> DailyNewsListAsync(List<Guid> userIdList)
         {
-            var news = await _newsContext.News
-                .Where(x => x.UserId == userId)
+            // Get the current date and time
+            var currentDate = DateTimeOffset.UtcNow;
+
+            // Calculate the start date and time for the last 24 hours
+            var startDate = currentDate.AddDays(-1);
+
+            // Query the News table to get the daily news for the given user IDs within the last 24 hours
+            var newsList = await _newsContext.News
+                .Where(x => userIdList.Contains(x.UserId) && x.CreatedDate >= startDate && x.CreatedDate <= currentDate)
                 .OrderByDescending(x => x.CreatedDate)
                 .Select(x => new NewsDto()
                 {
@@ -34,8 +41,25 @@ namespace GlowingNews.Infrastructure.Repositories
                     MediaType = (MediaTypeDto)x.MediaType,
                     Text = x.Text
                 })
-                .SingleOrDefaultAsync();
+                .ToListAsync();
 
+            return newsList;
+        }
+
+        public async Task<NewsDto?> GetNewsAsync(Guid newsId)
+        {
+            var news = await _newsContext.News
+                .Where(x => x.Id == newsId)
+                .Select(x => new NewsDto()
+                {
+                    Id = x.Id,
+                    UserId = x.UserId,
+                    UserName = x.UserName,
+                    MediaPath = string.IsNullOrWhiteSpace(x.MediaPath) ? "" : AwsFile.GetUrl(x.MediaPath),
+                    MediaType = (MediaTypeDto)x.MediaType,
+                    Text = x.Text
+                })
+                .SingleOrDefaultAsync();
             return news;
         }
 
@@ -54,7 +78,7 @@ namespace GlowingNews.Infrastructure.Repositories
                     Text = x.Text
                 })
                 .ToListAsync();
-           
+
             return newsList;
         }
 
@@ -69,7 +93,7 @@ namespace GlowingNews.Infrastructure.Repositories
                 MediaPath = addNewsDto.MediaPath,
                 MediaType = (MediaType)addNewsDto.MediaType
             };
-            
+
             await _newsContext.News.AddAsync(news);
             await _newsContext.SaveChangesAsync();
 
@@ -97,7 +121,7 @@ namespace GlowingNews.Infrastructure.Repositories
         public async Task<string?> DeleteNewsAsync(Guid userId, Guid newsId)
         {
             var news = await _newsContext.News.SingleOrDefaultAsync(x => x.UserId == userId && x.Id == newsId);
-            string? newsPath=null;
+            string? newsPath = null;
             if (news != null)
             {
                 if (news.MediaPath != null)

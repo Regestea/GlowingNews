@@ -22,6 +22,18 @@ builder.Services.AddAwsClientServices(options =>
     options.AwsGrpcUrl = builder.Configuration.GetSection("AwsServer:GrpcUrl").Value ?? throw new NullReferenceException();
 });
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAllOrigins",
+        builder =>
+        {
+            builder
+                .AllowAnyOrigin()
+                .AllowAnyHeader()
+                .AllowAnyMethod();
+        });
+});
+
 builder.Services.AddControllers();
 
 builder.Services.AddSwagger(options =>
@@ -39,7 +51,7 @@ builder.Services.AddMassTransit(config => {
 });
 
 var app = builder.Build();
-
+app.UseCors("AllowAllOrigins");
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
