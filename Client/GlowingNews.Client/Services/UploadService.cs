@@ -38,5 +38,35 @@ namespace GlowingNews.Client.Services
 
             return new Error<string>("upload field");
         }
+
+        public async Task<CreateResponse<JwtToken>> NewsImage(ImageUploadModel request, Action<UploadPercentageDto> onProgress)
+        {
+            await _httpClient.AddAuthHeader(_localStorageService);
+            var response = await _httpClient.SendRequestAsync("Aws/NewsImage", request.Image, "Image", onProgress.Invoke);
+
+            var token = await JsonConverter.ToObject<JwtToken>(response.Content);
+
+            if (response.StatusCode == HttpStatusCode.OK)
+            {
+                return new Success<JwtToken>(token);
+            }
+
+            return new Error<string>("upload field");
+        }
+
+        public async Task<CreateResponse<JwtToken>> NewsVideo(VideoUploadModel request, Action<UploadPercentageDto> onProgress)
+        {
+            await _httpClient.AddAuthHeader(_localStorageService);
+            var response = await _httpClient.SendRequestAsync("Aws/NewsVideo", request.Video, "Video", onProgress.Invoke);
+
+            var token = await JsonConverter.ToObject<JwtToken>(response.Content);
+
+            if (response.StatusCode == HttpStatusCode.OK)
+            {
+                return new Success<JwtToken>(token);
+            }
+
+            return new Error<string>("upload field");
+        }
     }
 }

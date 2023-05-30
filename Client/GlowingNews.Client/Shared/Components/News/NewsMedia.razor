@@ -1,0 +1,23 @@
+﻿
+@if (MediaType == MediaType.Video)
+{
+    <video width="400px" height="300px" controls>
+        <source src="@MediaUrl" type="video/mp4">
+        Error Message
+    </video>
+}
+@if (MediaType == MediaType.Image)
+{
+    <MudImage ObjectFit="ObjectFit.Cover" Style="max-width: 100%;max-height: 100%" Src="@MediaUrl" Elevation="25" Class="rounded-lg " />
+}
+
+
+@code {
+    [Parameter]
+    public MediaType MediaType { get; set; }
+
+    [Parameter]
+    public string MediaUrl { get; set; } = null!;
+
+
+}

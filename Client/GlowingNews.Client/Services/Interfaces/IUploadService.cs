@@ -9,5 +9,9 @@ namespace GlowingNews.Client.Services.Interfaces
     public interface IUploadService
     {
         Task<CreateResponse<JwtToken>> UserProfileImage(ImageUploadModel request,Action<UploadPercentageDto> onProgress);
+
+        Task<CreateResponse<JwtToken>> NewsImage(ImageUploadModel request, Action<UploadPercentageDto> onProgress);
+
+        Task<CreateResponse<JwtToken>> NewsVideo(VideoUploadModel request, Action<UploadPercentageDto> onProgress);
     }
 }
