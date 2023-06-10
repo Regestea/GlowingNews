@@ -9,7 +9,7 @@ namespace NewsLike.Application.Common.Interfaces
 
         Task<List<LikeDto>?> LikedNewsListAsync(Guid userId);
 
-        Task<Guid> AddLikeAsync(Guid userId, Guid newsId);
+        Task AddLikeAsync(Guid userId, Guid newsId);
 
         Task DeleteLikeAsync(Guid userId, Guid newsId);
     }

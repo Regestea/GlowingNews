@@ -24,6 +24,8 @@ builder.Services.AddScoped<IFollowService, FollowService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IUploadService, UploadService>();
 builder.Services.AddScoped<INewsService, NewsService>();
+builder.Services.AddScoped<ISearchService, SearchService>();
+builder.Services.AddScoped<ILikeService, LikeService>();
 
 
 builder.Services.AddHttpClient(nameof(HttpClients.Aws),
@@ -33,13 +35,13 @@ builder.Services.AddHttpClient(nameof(HttpClients.IdentityServer),
     client => { client.BaseAddress = new Uri("https://localhost:7126/"); });
 
 builder.Services.AddHttpClient(nameof(HttpClients.Like),
-    client => { client.BaseAddress = new Uri("https://localhost:7012/"); });
+    client => { client.BaseAddress = new Uri("https://localhost:7012/api/"); });
 
 builder.Services.AddHttpClient(nameof(HttpClients.News),
     client => { client.BaseAddress = new Uri("https://localhost:7043/api/"); });
 
 builder.Services.AddHttpClient(nameof(HttpClients.Search),
-    client => { client.BaseAddress = new Uri("https://localhost:7092/"); });
+    client => { client.BaseAddress = new Uri("https://localhost:7092/api/"); });
 
 builder.Services.AddHttpClient(nameof(HttpClients.User),
     client => { client.BaseAddress = new Uri("https://localhost:7050/api/"); });

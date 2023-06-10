@@ -1,0 +1,96 @@
+﻿@inject INewsService NewsService
+@inject IFollowService FollowService
+
+@if (News != null)
+{
+    <MudGrid Class="visibility border animate__animated animate__fadeIn ">
+   
+        <MudItem Class="d-flex flex-column  pa-6 " xs="12">
+
+            <MudCardHeader Class="animate__animated animate__backInRight visibility">
+
+                <CardHeaderAvatar>
+
+                    <div class=" d-flex">
+                        <UserAvatarLoader UserId="@News.UserId" UserName="@News.UserName"></UserAvatarLoader>
+                        <div style="margin-left: 0.5em">
+                            <MudText Style="display: block" Typo="Typo.body1">@News.UserName</MudText>
+
+                            <MudText Style="display: block" Typo="Typo.body1">Posted at @News.CreatedDate.Value.ToLocalTime().DateTime</MudText>
+                        </div>
+                    </div>
+                </CardHeaderAvatar>
+
+                <CardHeaderContent>
+                </CardHeaderContent>
+
+                <CardHeaderActions>
+                    <div style="margin: 1em">
+                        <Follow UserId="@News.UserId" IsFollow="!IsFollowed"></Follow>
+                    </div>
+                </CardHeaderActions>
+
+            </MudCardHeader>
+        </MudItem>
+        <MudItem Class="d-flex flex-column align-center pa-6" xs="5">
+            <NewsMedia MediaType="@News.MediaType" MediaUrl="@News.MediaPath" />
+            <div class="d-flex">
+                <div class="visibility pa-1 ma-2">
+                    <MudIconButton Icon="@Icons.Material.Filled.Share" Color="Color.Tertiary" aria-label="share"></MudIconButton>
+                </div>
+                <div class="visibility pa-1 ma-2">
+                    <NewsLike NewsId="News.Id" />
+                </div>
+            </div>
+
+        </MudItem>
+
+        <MudItem Class="d-flex align-center" Style="margin-top: -4em" xs="6">
+            <MudCardContent>
+                <MudText Typo="Typo.body1">@News.Text</MudText>
+            </MudCardContent>
+        </MudItem>
+
+    </MudGrid>
+}
+
+else
+{
+<MudGrid Class="d-flex flex-column align-center" >
+    <MudCardHeader Class=" d-flex flex-column align-center">
+        <CardHeaderContent>
+            <div class="visibility " style="height: 90px; width: 90px; padding: 1.2em">
+                <MudProgressCircular  Color="Color.Secondary" Size="Size.Large" Indeterminate="true" />
+            </div>
+               
+        </CardHeaderContent>
+    </MudCardHeader>
+</MudGrid>
+
+}
+
+@code {
+    [Parameter]
+    public Guid NewsId { get; set; }
+
+    private bool IsFollowed;
+
+    private News? News;
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        var news = await NewsService.GetNews(NewsId);
+
+        if (news.IsT0)
+        {
+            News = news.AsT0.Value;
+
+
+            var followResponse = await FollowService.IsFollowed(news.AsT0.Value.UserId);
+            IsFollowed = followResponse.AsT0.Value;
+
+        }
+    }
+
+}

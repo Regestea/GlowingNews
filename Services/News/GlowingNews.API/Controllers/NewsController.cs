@@ -18,9 +18,9 @@ namespace GlowingNews.API.Controllers
     [ApiController]
     public class NewsController : ControllerBase
     {
-        private INewsRepository _newsRepository;
-        private IJwtTokenRepository _jwtTokenRepository;
-        private AwsGrpcService _awsGrpcService;
+        private readonly INewsRepository _newsRepository;
+        private readonly IJwtTokenRepository _jwtTokenRepository;
+        private readonly AwsGrpcService _awsGrpcService;
         private readonly IPublishEndpoint _publishEndpoint;
 
         public NewsController(INewsRepository newsRepository, IJwtTokenRepository jwtTokenRepository, AwsGrpcService awsGrpcService, IPublishEndpoint publishEndpoint)
@@ -36,19 +36,15 @@ namespace GlowingNews.API.Controllers
         /// </summary>
         /// <response code="200">Success: Single news</response>
         /// <response code="404">NotFound: User don't have any news</response>
-        [ProducesResponseType(typeof(NewsDto), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(List<NewsDailyDto>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [AuthorizeByIdentityServer(Roles.User + "|" + Roles.Admin)]
         [HttpGet("Daily/List")]
         public async Task<IActionResult> GetDailyNewsList(List<Guid> followingIdList)
         {
             var news = await _newsRepository.DailyNewsListAsync(followingIdList);
-            if (news != null)
-            {
-                return Ok(news);
-            }
 
-            return NotFound();
+            return Ok(news);
         }
 
         /// <summary>
@@ -62,7 +58,9 @@ namespace GlowingNews.API.Controllers
         [HttpGet("{newsId}")]
         public async Task<IActionResult> GetNews(Guid newsId)
         {
+
             var news = await _newsRepository.GetNewsAsync(newsId);
+
             if (news != null)
             {
                 return Ok(news);

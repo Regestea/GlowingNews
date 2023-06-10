@@ -14,7 +14,7 @@ namespace GlowingNews.Client.Extensions
             PropertyNameCaseInsensitive = true,
         };
 
-        public static Task<T> ToObject<T>(string content) where T : class
+        public static Task<T> ToObject<T>(string content) 
         {
             return Task.FromResult(JsonSerializer.Deserialize<T>(content, _options) ??
                                    throw new InvalidOperationException());

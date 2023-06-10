@@ -22,7 +22,7 @@ namespace UserAccount.Infrastructure.Repositories
         }
 
 
-        public async Task<List<FollowingDto>?> FollowingList(Guid userId)
+        public async Task<List<FollowingDto>?> FollowingListAsync(Guid userId)
         {
             var followerList = await _context.Follows
                 .Where(x => x.FollowerId == userId)
@@ -39,7 +39,7 @@ namespace UserAccount.Infrastructure.Repositories
             return followerList;
         }
 
-        public async Task<List<FollowerDto>?> FollowerList(Guid userId)
+        public async Task<List<FollowerDto>?> FollowerListAsync(Guid userId)
         {
             var followingList = await _context.Follows
                 .Where(x => x.FollowingId == userId)
@@ -56,15 +56,20 @@ namespace UserAccount.Infrastructure.Repositories
             return followingList;
         }
 
-        public async Task Follow(Guid followerId, Guid followingId)
+        public async Task<bool> IsFollowedAsync(Guid userId, Guid targetId)
+        {
+            return await _context.Follows.AnyAsync(x => x.FollowerId == userId && x.FollowingId == targetId);
+        }
+
+        public async Task FollowAsync(Guid followerId, Guid followingId)
         {
             var existFollow = await _context.Follows.AnyAsync(x => x.FollowerId == followerId && x.FollowingId == followingId);
             if (existFollow) return;
 
-            var existFollower =await _context.Users.AnyAsync(x => x.Id == followerId);
-            var existFollowing =await _context.Users.AnyAsync(x => x.Id == followingId);
+            var existFollower = await _context.Users.AnyAsync(x => x.Id == followerId);
+            var existFollowing = await _context.Users.AnyAsync(x => x.Id == followingId);
 
-            
+
             if (existFollower && existFollowing)
             {
                 await _context.Follows.AddAsync(new Follow() { Id = Guid.NewGuid(), FollowerId = followerId, FollowingId = followingId });
@@ -72,7 +77,7 @@ namespace UserAccount.Infrastructure.Repositories
             }
         }
 
-        public async Task UnFollow(Guid requesterId, Guid targetId)
+        public async Task UnFollowAsync(Guid requesterId, Guid targetId)
         {
             var follow =
                 await _context.Follows.FirstOrDefaultAsync(

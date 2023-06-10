@@ -20,28 +20,30 @@ namespace GlowingNews.Infrastructure.Repositories
             _newsContext = newsContext;
         }
 
-        public async Task<List<NewsDto>?> DailyNewsListAsync(List<Guid> userIdList)
+        public async Task<List<NewsDailyDto>?> DailyNewsListAsync(List<Guid> userIdList)
         {
-            // Get the current date and time
-            var currentDate = DateTimeOffset.UtcNow;
+            //// Get the current date and time
+            //var currentDate = DateTimeOffset.UtcNow;
 
-            // Calculate the start date and time for the last 24 hours
-            var startDate = currentDate.AddDays(-1);
+            //// Calculate the start date and time for the last 24 hours
+            //var startDate = currentDate.AddDays(-1);
 
-            // Query the News table to get the daily news for the given user IDs within the last 24 hours
-            var newsList = await _newsContext.News
-                .Where(x => userIdList.Contains(x.UserId) && x.CreatedDate >= startDate && x.CreatedDate <= currentDate)
-                .OrderByDescending(x => x.CreatedDate)
-                .Select(x => new NewsDto()
-                {
-                    Id = x.Id,
-                    UserId = x.UserId,
-                    UserName = x.UserName,
-                    MediaPath = string.IsNullOrWhiteSpace(x.MediaPath) ? "" : AwsFile.GetUrl(x.MediaPath),
-                    MediaType = (MediaTypeDto)x.MediaType,
-                    Text = x.Text
-                })
-                .ToListAsync();
+            //// Query the News table to get the daily news for the given user IDs within the last 24 hours
+            //var newsList = await _newsContext.News
+            //    .Where(x => userIdList.Contains(x.UserId) && x.CreatedDate >= startDate && x.CreatedDate <= currentDate)
+            //    .OrderByDescending(x => x.CreatedDate)
+            //    .Select(x => new NewsDailyDto()
+            //    {
+            //        Id = x.Id,
+            //        CreatedDate = x.CreatedDate
+            //    })
+            //    .ToListAsync();
+
+            var newsList = await _newsContext.News.Select(x => new NewsDailyDto()
+            {
+                Id = x.Id,
+                CreatedDate = x.CreatedDate
+            }).ToListAsync();
 
             return newsList;
         }
@@ -57,7 +59,8 @@ namespace GlowingNews.Infrastructure.Repositories
                     UserName = x.UserName,
                     MediaPath = string.IsNullOrWhiteSpace(x.MediaPath) ? "" : AwsFile.GetUrl(x.MediaPath),
                     MediaType = (MediaTypeDto)x.MediaType,
-                    Text = x.Text
+                    Text = x.Text,
+                    CreatedDate = x.CreatedDate
                 })
                 .SingleOrDefaultAsync();
             return news;
@@ -75,7 +78,8 @@ namespace GlowingNews.Infrastructure.Repositories
                     UserName = x.UserName,
                     MediaPath = string.IsNullOrWhiteSpace(x.MediaPath) ? "" : AwsFile.GetUrl(x.MediaPath),
                     MediaType = (MediaTypeDto)x.MediaType,
-                    Text = x.Text
+                    Text = x.Text,
+                    CreatedDate = x.CreatedDate
                 })
                 .ToListAsync();
 

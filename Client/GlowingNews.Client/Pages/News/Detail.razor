@@ -1,0 +1,21 @@
+﻿@page "/News/{NewsId:guid}"
+@using GlowingNews.Client.Extensions
+
+
+
+
+<div class="animate__animated animate__bounceInRight" >
+    <NewsLoader @key="NewsId" NewsId="NewsId"></NewsLoader>
+
+</div>
+
+
+
+@code
+{
+    [Parameter]
+    public Guid NewsId { get; set; }
+}
+
+
+

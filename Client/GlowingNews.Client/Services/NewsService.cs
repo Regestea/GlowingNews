@@ -97,7 +97,7 @@ namespace GlowingNews.Client.Services
             return new NotFound();
         }
 
-        public async Task<ReadResponse<List<News>>> GetDailyNewsList(List<Guid> followingIdList)
+        public async Task<ReadResponse<List<NewsDaily>>> GetDailyNewsList(List<Guid> followingIdList)
         {
             await _httpClient.AddAuthHeader(_localStorageService);
 
@@ -107,12 +107,12 @@ namespace GlowingNews.Client.Services
 
             if (response.StatusCode == HttpStatusCode.OK)
             {
-                var news = await JsonConverter.ToObject<List<News>>(response.Content);
+                var news = await JsonConverter.ToObject<List<NewsDaily>>(response.Content);
 
-                return new Success<List<News>>(news);
+                return new Success<List<NewsDaily>>(news);
             }
 
-            return new NotFound();
+            return new Success<List<NewsDaily>>(new List<NewsDaily>());
         }
     }
 }

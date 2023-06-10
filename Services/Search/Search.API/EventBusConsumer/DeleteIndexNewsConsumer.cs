@@ -16,6 +16,7 @@ namespace Search.API.EventBusConsumer
 
         public async Task Consume(ConsumeContext<DeleteNewsFromSearchIndexEvent> context)
         {
+            Console.WriteLine("Delete Consume");
             await _elasticClient.DeleteAsync<News>(context.Message.NewsId);
         }
     }

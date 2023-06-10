@@ -1,2 +1,102 @@
 ﻿@page "/"
+@inject INewsService NewsService
+@inject IFollowService FollowService
+@inject AuthStateProvider AuthStateProvider
+
+<div @onwheel="OnWheel" style="margin-bottom: 40em;overflow: hidden">
+
+    @if (NewsShowId != null)
+    {
+        <div class="animate__animated animate__bounceInRight" style="margin-top: 5em">
+            <NewsLoader @key="NewsShowId.Value" NewsId="NewsShowId.Value"></NewsLoader>
+
+        </div>
+    }
+
+  
+ 
+    @if (showLoading)
+    {
+        <MudGrid Class="d-flex flex-column align-center" >
+            <MudCardHeader Class=" d-flex flex-column align-center">
+                <CardHeaderContent>
+                    <div class="visibility " style="height: 90px; width: 90px; padding: 1.2em">
+                        <MudProgressCircular  Color="Color.Secondary" Size="Size.Large" Indeterminate="true" />
+                    </div>
+               
+                </CardHeaderContent>
+            </MudCardHeader>
+        </MudGrid>
+    }
+</div>
+
+
+@code
+{
+    [Inject]
+    private IJSRuntime JSRuntime { get; set; }
+
+    private bool showLoading = false;
+
+    private List<NewsDaily>? NewsDailyList=new List<NewsDaily>()
+    {
+        new NewsDaily() {Id = Guid.Parse("1677ec0e-a9a0-4807-bacd-ca843936117d")},
+        new NewsDaily() {Id = Guid.Parse("1b5a3c0b-394c-423a-a261-5a6f876fc98e")},
+        new NewsDaily() {Id = Guid.Parse("22571e8f-b7ab-4105-863a-2b69b4ac6837")},
+        new NewsDaily() {Id = Guid.Parse("5eaca31e-fe24-4455-af07-603bfbe8f539")},
+
+    };
+
+    private Guid? NewsShowId;
+
+    protected override async Task OnInitializedAsync()
+    {
+        // var userData = await AuthStateProvider.ExtractUserDataFromLocalToken();
+
+        // var followingList=await FollowService.GetFollowingList(userData.Id);
+        // var followingListId = followingList.AsT0.Value.Select(x => x.UserId).ToList();
+        // var newsIdListResponse = await NewsService.GetDailyNewsList(followingListId);
+
+        // NewsDailyList = newsIdListResponse.AsT0.Value;
+
+        if (NewsDailyList.Count>=1)
+        {
+            NewsShowId = NewsDailyList.First().Id;
+        }
+
+        StateHasChanged();
+    }
+
+    private async Task OnWheel(WheelEventArgs e)
+    {
+        var isEndPage = await JSRuntime.InvokeAsync<bool>("scrollIntercept.isEndOfPageReached");
+        
+        if (isEndPage)
+        {
+            Console.WriteLine("!!!");
+            showLoading = true;
+        }
+        else
+        {
+            Console.WriteLine("OOO");
+            showLoading = false;
+        }
+        if (isEndPage)
+        {
+            int pastNewsIndex = NewsDailyList.IndexOf(NewsDailyList.First(x => x.Id == NewsShowId));
+            NewsDailyList.
+            int nextNewsIndex = +1;
+
+            NewsShowId = NewsDailyList[nextNewsIndex].Id;
+
+            showLoading = false;
+        }
+    }
+
+
+
+}
+
+
+
 

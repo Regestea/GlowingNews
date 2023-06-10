@@ -17,6 +17,7 @@ namespace Search.API.EventBusConsumer
         public async Task Consume(ConsumeContext<UpdateNewsFromSearchIndexEvent> context)
         {
 
+            Console.WriteLine("Update Consume");
             var response = await _elasticClient.UpdateAsync<News>(context.Message.NewsId, u => u
                 .Doc(new News() { Id = context.Message.NewsId, Text = context.Message.Text })
             );

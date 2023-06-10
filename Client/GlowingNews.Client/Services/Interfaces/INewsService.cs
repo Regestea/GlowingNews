@@ -11,6 +11,6 @@ namespace GlowingNews.Client.Services.Interfaces
         Task<DeleteResponse> DeleteNews(Guid newsId);
         Task<ReadResponse<News>> GetNews(Guid id);
         Task<ReadResponse<List<News>>> GetNewsList(Guid userId);
-        Task<ReadResponse<List<News>>> GetDailyNewsList(List<Guid> followingIdList);
+        Task<ReadResponse<List<NewsDaily>>> GetDailyNewsList(List<Guid> followingIdList);
     }
 }

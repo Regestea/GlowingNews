@@ -1,0 +1,44 @@
+﻿@inject ILikeService LikeService
+
+
+    <MudCheckBox @onclick="LikeHandler" @bind-Checked="IsLiked" Color="Color.Secondary" CheckedIcon="@Icons.Material.Filled.Favorite" UncheckedIcon="@Icons.Material.Filled.FavoriteBorder">@LikeCount</MudCheckBox>
+
+
+
+@code {
+
+    [Parameter]
+    public Guid NewsId { get; set; }
+
+    public bool IsLiked { get; set; } 
+
+    private int LikeCount;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var isLikedResponse = await LikeService.IsLikedAsync(NewsId);
+        var likeCountResponse = await LikeService.NewsLikeCountAsync(NewsId);
+
+        LikeCount = likeCountResponse.AsT0.Value;
+        IsLiked = isLikedResponse.AsT0.Value;
+    }
+
+    private async Task LikeHandler()
+    {
+        
+    if (!IsLiked)
+        {
+            await LikeService.AddLikeAsync(NewsId);
+            IsLiked = true;
+            LikeCount++;
+            
+        }
+        else
+        {
+            await LikeService.DeleteLikeAsync(NewsId);
+            IsLiked = false;
+            LikeCount--;
+            
+        }
+    }
+}
