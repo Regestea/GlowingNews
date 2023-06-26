@@ -1,50 +1,31 @@
-﻿@using GlowingNews.Client.Shared.Components.AppBar
+﻿@using GlowingNews.Client.Shared.Components.SideBar
 @inherits LayoutComponentBase
-@inject Blazored.LocalStorage.ILocalStorageService LocalStorage
-@inject NavigationManager NavigationManager;
+
 
 <ThemeLoader/>
 <MudDialogProvider/>
 <MudSnackbarProvider/>
 
 <MudLayout>
-    <MudAppBar Elevation="0" Class="nav-border visibility" >
-        <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())"/>
+    <MudAppBar Elevation="0" Class="nav-border visibility"  >
        
         <Search/>
 
-       
-        <MudSpacer/>
-
-        <MudAvatar Image="/images/Auth.png"/>
-        <MudButton @onclick="Logout" Color="Color.Error">Logout</MudButton>
-
     </MudAppBar>
-    <MudDrawer @bind-Open="_drawerOpen" Elevation="1" Class="nav-border visibility">
-        <MudDrawerHeader>
-            <MudText Typo="Typo.h6">MudBlazorTemplates3</MudText>
-        </MudDrawerHeader>
-        <NavMenu/>
-    </MudDrawer>
-    <MudMainContent>
-        <MudContainer MaxWidth="MaxWidth.Large" Class="my-16 pt-16">
+    
+    <SideBar/>
+
+
+  <MudMainContent>
+        <MudContainer MaxWidth="MaxWidth.Large" Class="my-16 pt-16" Style="margin-left: 20%">
             @Body
         </MudContainer>
     </MudMainContent>
 </MudLayout>
 
 @code {
-    bool _drawerOpen = true;
 
-    async Task Logout()
-    {
-        await LocalStorage.RemoveItemAsync("authToken");
-        NavigationManager.NavigateTo("/");
-    }
 
-    void DrawerToggle()
-    {
-        _drawerOpen = !_drawerOpen;
-    }
+    
 
 }

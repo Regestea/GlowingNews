@@ -7,7 +7,7 @@
 
     @if (NewsShowId != null)
     {
-        <div class="animate__animated animate__bounceInRight" style="margin-top: 5em">
+        <div class=" animate__animated animate__bounceInRight visibility border" style="margin-top: 5em">
             <NewsLoader @key="NewsShowId.Value" NewsId="NewsShowId.Value"></NewsLoader>
 
         </div>
@@ -69,28 +69,53 @@
 
     private async Task OnWheel(WheelEventArgs e)
     {
-        var isEndPage = await JSRuntime.InvokeAsync<bool>("scrollIntercept.isEndOfPageReached");
-        
-        if (isEndPage)
-        {
-            Console.WriteLine("!!!");
-            showLoading = true;
-        }
-        else
-        {
-            Console.WriteLine("OOO");
-            showLoading = false;
-        }
-        if (isEndPage)
-        {
-            int pastNewsIndex = NewsDailyList.IndexOf(NewsDailyList.First(x => x.Id == NewsShowId));
-            NewsDailyList.
-            int nextNewsIndex = +1;
+        //if scroll get end nextOrPrevious is true and if scroll get 0 nextOrPrevious is false else null
+        var nextOrPrevious = await JSRuntime.InvokeAsync<bool?>("scrollIntercept.nextOrPrevious");
 
-            NewsShowId = NewsDailyList[nextNewsIndex].Id;
 
-            showLoading = false;
+        if (nextOrPrevious != null)
+        {
+            if (nextOrPrevious == true)
+            {
+                showLoading = true;
+            }
+            else
+            {
+                showLoading = false;
+            }
+            //loading next news
+            if (nextOrPrevious == true)
+            {
+                if (NewsDailyList.Last().Id != NewsShowId)
+                {
+                    int pastNewsIndex = NewsDailyList.IndexOf(NewsDailyList.First(x => x.Id == NewsShowId));
+
+                    int nextNewsIndex = pastNewsIndex + 1;
+
+                    NewsShowId = NewsDailyList[nextNewsIndex].Id;
+                    await JSRuntime.InvokeVoidAsync("scrollToTop");
+               
+                
+                }
+                showLoading = false;
+            }
+            // loading previous news
+            else
+            {
+                if (NewsDailyList.First().Id != NewsShowId)
+                {
+                    int pastNewsIndex = NewsDailyList.IndexOf(NewsDailyList.First(x => x.Id == NewsShowId));
+
+                    int nextNewsIndex = pastNewsIndex - 1;
+
+                    NewsShowId = NewsDailyList[nextNewsIndex].Id;
+                    await JSRuntime.InvokeVoidAsync("scrollToTop");
+
+                }
+                showLoading = false;
+            }
         }
+     
     }
 
 

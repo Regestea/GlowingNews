@@ -1,0 +1,104 @@
+﻿@inject Blazored.LocalStorage.ILocalStorageService localStorage
+@inject NavigationManager uriHelper;
+
+
+<section class="nav-border nav-section @NavMenuClass">
+    <div style="margin: 0.5em;">
+
+        <MudNavLink Href="" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Home">Home</MudNavLink>
+        <MudNavGroup Title="My Account" Icon="@Icons.Material.Filled.AccountCircle" Expanded="true">
+            <MudNavLink Href="/UserAccount/Edit" Icon="@Icons.Material.Filled.Edit" IconColor="Color.Success">Edit</MudNavLink>
+            <MudNavLink Href="/UserAccount" Icon="@Icons.Material.Filled.ViewStream" IconColor="Color.Info">View</MudNavLink>
+        </MudNavGroup>
+        <MudNavGroup Title="News" Icon="@Icons.Material.Filled.Note" Expanded="true">
+            <MudNavLink Href="/News/Add" Icon="@Icons.Material.Filled.PostAdd" IconColor="Color.Success">Post a news</MudNavLink>
+            <MudNavLink Href="/News" Icon="@Icons.Material.Filled.List" IconColor="Color.Info">All my news</MudNavLink>
+        </MudNavGroup>
+
+    </div>
+</section>
+
+<section class="nav-border nav-section @ThemeMenuClass">
+    <div style="margin: 0.5em">
+
+        @if (localThemeDto != null)
+        {
+            <CustomizeThemeForm ThemeDto="SaveInLocalStorage" LocalThemeDto="@localThemeDto"/>
+        }
+        else
+        {
+            <h1>Loading</h1>
+        }
+
+    </div>
+</section>
+
+<section class="nav-border nav-section @ProfileMenuClass">
+    <div style="margin: 0.5em">
+
+        <UserProfile/>
+
+    </div>
+</section>
+
+<section class="nav-border visibility tools-bar">
+    <div style="margin: 0.5em">
+
+        <MudIconButton @onclick="ToggleNavMenu" Icon="@Icons.Material.Outlined.Menu" Color="Color.Secondary" />
+        <MudIconButton @onclick="ToggleThemeMenu" Icon="@Icons.Material.Filled.Brush" Color="Color.Secondary" />
+        <MudIconButton @onclick="ToggleProfileMenu" Icon="@Icons.Material.Outlined.AccountCircle" Color="Color.Secondary" />
+       
+    </div>
+
+</section>
+
+@code {
+    private ThemeDto? localThemeDto;
+
+    private string NavMenuClass = "menu-on";
+    private string ThemeMenuClass = "menu-off";
+    private string ProfileMenuClass = "menu-off";
+
+    protected override async Task OnInitializedAsync()
+    {
+
+        localThemeDto = await localStorage.GetItemAsync<ThemeDto>("Theme") ?? new ThemeDto()
+            {
+                BackgroundType = BackgroundType.MaterialSvg1,
+                BorderType = BorderType.LightNeon,
+                NavBorderType = NavBorderType.LightNeon,
+
+            };
+    }
+
+    private void SaveInLocalStorage(ThemeDto theme)
+    {
+        localStorage.SetItemAsync("Theme", theme);
+        uriHelper.NavigateTo(uriHelper.Uri, forceLoad: true);
+    }
+
+
+    private void ToggleNavMenu()
+    {
+        if (ThemeMenuClass == "menu-on") ThemeMenuClass = "menu-off";
+        if (ProfileMenuClass == "menu-on") ProfileMenuClass = "menu-off";
+
+            NavMenuClass = NavMenuClass == "menu-on" ? "menu-off" : "menu-on";
+    }
+
+    private void ToggleThemeMenu()
+    {
+        if (NavMenuClass == "menu-on") NavMenuClass = "menu-off";
+        if (ProfileMenuClass == "menu-on") ProfileMenuClass = "menu-off";
+        
+        ThemeMenuClass = ThemeMenuClass == "menu-on" ? "menu-off" : "menu-on";
+    }
+
+    private void ToggleProfileMenu()
+    {
+        if (NavMenuClass == "menu-on") NavMenuClass = "menu-off";
+        if (ThemeMenuClass == "menu-on") ThemeMenuClass = "menu-off";
+        
+        ProfileMenuClass = ProfileMenuClass == "menu-on" ? "menu-off" : "menu-on";
+    }
+}

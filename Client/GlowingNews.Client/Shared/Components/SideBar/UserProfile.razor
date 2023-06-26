@@ -1,0 +1,44 @@
+﻿@inject IUserService UserService
+@inject Blazored.LocalStorage.ILocalStorageService LocalStorage
+@inject NavigationManager NavigationManager
+
+@if (user != null)
+{
+    <div class=" d-flex flex-column align-center pa-6 ">
+        <UserAvatarLoader UserId="@user.Id" UserName="@user.Name"></UserAvatarLoader>
+        <h1>@user.Name</h1>
+        <h1>@user.Email</h1>
+        <MudButton Style="margin-top: 2em" Href="/UserAccount"
+                   Variant="Variant.Outlined"
+                   EndIcon="@Icons.Material.Outlined.AccountCircle"
+                   Color="Color.Tertiary">
+            My Account
+        </MudButton>
+
+        <MudButton @onclick="Logout" Style="margin-top: 2em"
+                   Variant="Variant.Outlined"
+                   EndIcon="@Icons.Material.Outlined.Logout"
+                   Color="Color.Error">
+            Logout
+        </MudButton>
+    </div>
+    
+
+}
+
+@code {
+    private User? user;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var userResponse = await UserService.GetUser();
+        user = userResponse.AsT0.Value;
+    }
+
+    async Task Logout()
+    {
+        await LocalStorage.RemoveItemAsync("authToken");
+        NavigationManager.NavigateTo("/",true);
+    }
+
+}

@@ -6,9 +6,9 @@
 @inject IUploadService UploadService
 @inject NavigationManager NavigationManager
 
-<MudGrid Class="animate__animated animate__fadeIn">
+<MudGrid Class="">
     <MudItem xs="8">
-        <MudCard Class="visibility border d-flex flex-column align-center pa-6 ">
+        <MudCard Class="animate__animated animate__fadeIn d-flex flex-column align-center pa-6 visibility border ">
         @if (user != null)
         {
                 <UserAvatar ImageUrl="@user.Image" Letter="@user.Name.Substring(0, 1).ToUpper()" Width="12em" Height="12em" />

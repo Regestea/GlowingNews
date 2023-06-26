@@ -8,16 +8,23 @@ window.loadVideo = (videoElement) => {
     videoElement.load();
 };
 
+function scrollToTop() {
+    window.scrollTo(5, 0);
+}
 
 window.scrollIntercept = {
-    isEndOfPageReached: function () {
+    nextOrPrevious: function () {
         var scrollPosition = window.pageYOffset;
         var pageHeight = document.documentElement.scrollHeight;
         var windowHeight = window.innerHeight;
-        var isEndOfPageReached = false;
-        if (scrollPosition + windowHeight +400 >= pageHeight) {
-            isEndOfPageReached = true;
+        var nextOrPrevious = null;
+        if (scrollPosition + windowHeight + 500 >= pageHeight) {
+            nextOrPrevious = true;
         }
-        return isEndOfPageReached;
+        if (scrollPosition == 0) {
+            nextOrPrevious = false;
+        }
+        return nextOrPrevious;
     }
 }
+

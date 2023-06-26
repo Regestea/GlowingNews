@@ -4,10 +4,10 @@
 @inject AuthStateProvider AuthStateProvider
 @inject IUserService UserService
 
-<MudGrid Class="animate__animated animate__fadeIn">
+<MudGrid >
     <MudItem xs="8">
 
-        <MudCard Class="animate__animated animate__fadeIn visibility border d-flex flex-column align-center pa-6 ">
+        <MudCard Class=" animate__animated animate__fadeIn d-flex flex-column align-center pa-6 visibility border">
             @if (user != null)
             {
                 <div class="animate__animated animate__fadeIn">
@@ -27,10 +27,7 @@
                     }
 
                 </MudCardContent>
-                <MudCardActions>
-                    <MudLink Href="/UserAccount/Edit" Class="ma-4" Variant="Variant.Filled" StartIcon="@Icons.Material.Outlined.Edit" Color="Color.Info">Edit details </MudLink>
-                    <MudLink Href="/UserAccount/Detail/Edit" Class="ma-4" Variant="Variant.Filled" StartIcon="@Icons.Material.Outlined.Edit" Color="Color.Info">My News </MudLink>
-                </MudCardActions>
+                
             }
             else
             {

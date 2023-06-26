@@ -1,18 +1,17 @@
 ﻿@inject Blazored.LocalStorage.ILocalStorageService localStorage
 
-@if (localThemeDto != null)
-{
-    <MudThemeProvider IsDarkMode="localThemeDto.IsDarkMode"/>
-}
+
+<MudThemeProvider IsDarkMode="true" />
+
 
 <HeadContent>
 
     @if (localThemeDto != null)
     {
-        <link rel="stylesheet" href="/css/Theme/NavBorderType/@(localThemeDto.NavBorderType).css"/>
-        <link rel="stylesheet" href="/css/Theme/BackgroundType/@(localThemeDto.BackgroundType).css"/>
-        <link rel="stylesheet" href="/css/Theme/BorderType/@(localThemeDto.BorderType).css"/>
-        <link rel="stylesheet" href="/css/Theme/VisibilityType/@(localThemeDto.VisibilityType).css"/>
+        <link rel="stylesheet" href="/css/Theme/NavBorderType/@(localThemeDto.NavBorderType).css" />
+        <link rel="stylesheet" href="/css/Theme/BackgroundType/@(localThemeDto.BackgroundType).css" />
+        <link rel="stylesheet" href="/css/Theme/BorderType/@(localThemeDto.BorderType).css" />
+        <link rel="stylesheet" href="/css/Theme/VisibilityType/DarkGlasses.css" />
     }
 
 </HeadContent>
@@ -25,13 +24,11 @@
     protected override async Task OnInitializedAsync()
     {
         localThemeDto = await localStorage.GetItemAsync<ThemeDto>("Theme") ?? new ThemeDto()
-        {
-            BackgroundType = BackgroundType.None,
-            BorderType = BorderType.None,
-            VisibilityType = VisibilityType.Regular,
-            NavBorderType = NavBorderType.None,
-            IsDarkMode = true
-        };
+            {
+                BackgroundType = BackgroundType.MaterialSvg1,
+                BorderType = BorderType.LightNeon,
+                NavBorderType = NavBorderType.LightNeon,
+            };
     }
 
 }
