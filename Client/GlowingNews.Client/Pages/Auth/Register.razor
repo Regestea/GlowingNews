@@ -7,9 +7,9 @@
 
 <EditForm EditContext="editContext" OnValidSubmit="OnValidSubmit">
     <DataAnnotationsValidator/>
-    <MudGrid Class="animate__animated animate__fadeIn ">
+    <MudGrid>
         <MudItem xs="12" sm="7">
-            <MudCard Class="visibility border">
+            <MudCard Class="animate__animated animate__fadeIn visibility border">
                 <MudChip Text="pink" Variant="Variant.Text" Color="Color.Secondary">Register</MudChip>
                 <MudCardContent>
                     <MudTextField @onfocusout="ClearErrors" Label="Email" HelperText="Max. 50 characters"

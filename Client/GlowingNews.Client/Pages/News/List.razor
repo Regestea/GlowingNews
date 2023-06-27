@@ -2,6 +2,7 @@
 @inject INewsService NewsService
 @inject AuthStateProvider AuthStateProvider
 @inject NavigationManager NavigationManager
+@attribute [Authorize(Roles = "User,Admin")]
 
 @if (NewsList != null)
 {

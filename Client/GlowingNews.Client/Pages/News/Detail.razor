@@ -1,10 +1,10 @@
 ﻿@page "/News/{NewsId:guid}"
-@using GlowingNews.Client.Extensions
+@attribute [Authorize(Roles = "User,Admin")]
 
 
 
 
-<div class="animate__animated animate__bounceInRight" >
+<div class="animate__animated animate__bounceInRight visibility border" >
     <NewsLoader @key="NewsId" NewsId="NewsId"></NewsLoader>
 
 </div>

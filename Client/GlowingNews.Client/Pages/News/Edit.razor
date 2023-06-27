@@ -1,6 +1,7 @@
 ﻿@page "/News/Edit/{NewsId:guid}"
 @inject INewsService NewsService
 @inject NavigationManager NavigationManager
+@attribute [Authorize(Roles = "User,Admin")]
 
 <MudGrid Class="visibility border animate__animated animate__fadeIn">
     <MudItem Class="d-flex flex-column align-center pa-6 " Style="margin: 1em" xs="5">

@@ -1,8 +1,8 @@
 ﻿@page "/UserAccount"
-
 @inject IFollowService FollowService
 @inject AuthStateProvider AuthStateProvider
 @inject IUserService UserService
+@attribute [Authorize(Roles = "User,Admin")]
 
 <MudGrid >
     <MudItem xs="8">
@@ -44,7 +44,7 @@
         <MudTabs Elevation="4" Rounded="true" Centered="true" Color="@Color.Primary">
             <MudTabPanel Text="Followings">
 
-                <div Style="overflow: scroll; height: 35em">
+                <div Style="overflow-y: scroll;overflow-x:hidden ; height: 35em">
 
                     @if (FollowingLoading)
                     {

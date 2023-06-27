@@ -3,9 +3,11 @@
 @using GlowingNews.Client.DTOs.Response
 @using GlowingNews.Client.Models.News
 @using GlowingNews.Client.responses.Base
+@using Microsoft.AspNetCore.Authorization
 @inject IUploadService UploadService
 @inject NavigationManager NavigationManager
 @inject INewsService NewsService
+@attribute [Authorize(Roles = "User,Admin")]
 
 <MudGrid Class="visibility border animate__animated animate__fadeIn">
     <MudItem Class="d-flex flex-column align-center pa-6 " Style="margin: 1em" xs="5">

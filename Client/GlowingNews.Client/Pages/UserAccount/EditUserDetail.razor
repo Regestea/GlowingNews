@@ -5,6 +5,7 @@
 @inject IUserService UserService
 @inject IUploadService UploadService
 @inject NavigationManager NavigationManager
+@attribute [Authorize(Roles = "User,Admin")]
 
 <MudGrid Class="">
     <MudItem xs="8">

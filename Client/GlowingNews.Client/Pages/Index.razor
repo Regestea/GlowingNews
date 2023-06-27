@@ -2,6 +2,7 @@
 @inject INewsService NewsService
 @inject IFollowService FollowService
 @inject AuthStateProvider AuthStateProvider
+@attribute [Authorize(Roles = "User,Admin")]
 
 <div @onwheel="OnWheel" style="margin-bottom: 40em;overflow: hidden">
 

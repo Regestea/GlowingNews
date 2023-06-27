@@ -4,16 +4,30 @@
 
 <section class="nav-border nav-section @NavMenuClass">
     <div style="margin: 0.5em;">
+        
+        <AuthorizeView>
+            <Authorized>
+                <MudNavLink Href="" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Home">Home</MudNavLink>
+                <MudNavGroup Title="My Account" Icon="@Icons.Material.Filled.AccountCircle" Expanded="true">
+                    <MudNavLink Href="/UserAccount/Edit" Icon="@Icons.Material.Filled.Edit" IconColor="Color.Success">Edit</MudNavLink>
+                    <MudNavLink Href="/UserAccount" Icon="@Icons.Material.Filled.ViewStream" IconColor="Color.Info">View</MudNavLink>
+                </MudNavGroup>
+                <MudNavGroup Title="News" Icon="@Icons.Material.Filled.Note" Expanded="true">
+                    <MudNavLink Href="/News/Add" Icon="@Icons.Material.Filled.PostAdd" IconColor="Color.Success">Post a news</MudNavLink>
+                    <MudNavLink Href="/News" Icon="@Icons.Material.Filled.List" IconColor="Color.Info">All my news</MudNavLink>
+                </MudNavGroup>
+            </Authorized>
+            <NotAuthorized>
+                <MudButton Style="margin: 2em" Href="/Login"
+                           Variant="Variant.Outlined"
+                           EndIcon="@Icons.Material.Outlined.Login"
+                           Color="Color.Tertiary">
+                   Please Login
+                </MudButton>
+            </NotAuthorized>
+        </AuthorizeView>
 
-        <MudNavLink Href="" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Home">Home</MudNavLink>
-        <MudNavGroup Title="My Account" Icon="@Icons.Material.Filled.AccountCircle" Expanded="true">
-            <MudNavLink Href="/UserAccount/Edit" Icon="@Icons.Material.Filled.Edit" IconColor="Color.Success">Edit</MudNavLink>
-            <MudNavLink Href="/UserAccount" Icon="@Icons.Material.Filled.ViewStream" IconColor="Color.Info">View</MudNavLink>
-        </MudNavGroup>
-        <MudNavGroup Title="News" Icon="@Icons.Material.Filled.Note" Expanded="true">
-            <MudNavLink Href="/News/Add" Icon="@Icons.Material.Filled.PostAdd" IconColor="Color.Success">Post a news</MudNavLink>
-            <MudNavLink Href="/News" Icon="@Icons.Material.Filled.List" IconColor="Color.Info">All my news</MudNavLink>
-        </MudNavGroup>
+       
 
     </div>
 </section>
@@ -21,22 +35,36 @@
 <section class="nav-border nav-section @ThemeMenuClass">
     <div style="margin: 0.5em">
 
-        @if (localThemeDto != null)
-        {
-            <CustomizeThemeForm ThemeDto="SaveInLocalStorage" LocalThemeDto="@localThemeDto"/>
-        }
-        else
-        {
-            <h1>Loading</h1>
-        }
+                @if (localThemeDto != null)
+                {
+                    <CustomizeThemeForm ThemeDto="SaveInLocalStorage" LocalThemeDto="@localThemeDto"/>
+                }
+                else
+                {
+                    <h1>Loading</h1>
+                }
 
     </div>
 </section>
 
 <section class="nav-border nav-section @ProfileMenuClass">
     <div style="margin: 0.5em">
+        
+        <AuthorizeView>
+            <Authorized>
+                <UserProfile/>
+            </Authorized>
+            <NotAuthorized>
+                <MudButton Style="margin: 2em" Href="/Login"
+                           Variant="Variant.Outlined"
+                           EndIcon="@Icons.Material.Outlined.Login"
+                           Color="Color.Tertiary">
+                    Please Login
+                </MudButton>
+            </NotAuthorized>
+        </AuthorizeView>
 
-        <UserProfile/>
+
 
     </div>
 </section>
