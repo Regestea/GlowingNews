@@ -1,0 +1,68 @@
+﻿@page "/News/Edit/{NewsId:guid}"
+@inject INewsService NewsService
+@inject NavigationManager NavigationManager
+@attribute [Authorize(Roles = "User,Admin")]
+
+<MudGrid Class="visibility border animate__animated animate__fadeIn">
+    <MudItem Class="d-flex flex-column align-center pa-6 " Style="margin: 1em" xs="5">
+        @if (News != null)
+        {
+            <NewsMedia MediaType="@News.MediaType" MediaUrl="@News.MediaPath"/>
+        }
+    </MudItem>
+
+    <MudItem xs="6">
+        <MudCardContent>
+            <MudText Typo="Typo.h5">What's your news</MudText>
+            <MudTextField @bind-Value="EditNewsModel.Text" T="string" Label="News" Variant="Variant.Outlined" Placeholder="write your news" Lines="7" />
+        </MudCardContent>
+    </MudItem>
+    <MudItem Class="d-flex flex-column pa-6" xs="6">
+
+    </MudItem>
+    <MudItem Class="d-flex flex-column pa-6" xs="3">
+        <MudButton @onclick="DiscardChanges" Class="ma-4" Variant="Variant.Filled" StartIcon="@Icons.Material.Outlined.Delete" Color="Color.Secondary">Discard Changes</MudButton>
+    </MudItem>
+    <MudItem Class="d-flex flex-column pa-6" xs="3">
+        <MudButton @onclick="Save" Class="ma-4" Variant="Variant.Filled" StartIcon="@Icons.Material.Outlined.Save" Color="Color.Tertiary">Save</MudButton>
+    </MudItem>
+</MudGrid>
+
+
+@code {
+    [Parameter]
+    public Guid NewsId { get; set; }
+    private News? News; 
+    private EditNewsModel EditNewsModel = new();
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        var news = await NewsService.GetNews(NewsId);
+        
+        if (news.IsT0)
+        {
+            News = news.AsT0.Value;
+            EditNewsModel.Text = news.AsT0.Value.Text;
+        }
+        else
+        {
+            NavigationManager.NavigateTo("/");
+        }
+    }
+
+    private void DiscardChanges()
+    {
+        NavigationManager.NavigateTo("/News");
+    }
+
+    private async Task Save()
+    {
+        var response = await NewsService.EditNews(NewsId,EditNewsModel);
+
+        if (response.IsT0)
+        {
+            NavigationManager.NavigateTo("/News");
+        }
+    }
+}

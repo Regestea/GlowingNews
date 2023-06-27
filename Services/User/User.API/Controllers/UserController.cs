@@ -93,9 +93,11 @@ namespace UserAccount.API.Controllers
         public async Task<IActionResult> GetUser(Guid id)
         {
             var user = await _userRepository.GetUserAsync(id);
-            if (user == null)
+
+            if (user?.Image != null)
             {
-                return NotFound();
+                var imageUrl = AwsFile.GetUrl(user.Image);
+                user.Image = imageUrl;
             }
 
             return Ok(user);

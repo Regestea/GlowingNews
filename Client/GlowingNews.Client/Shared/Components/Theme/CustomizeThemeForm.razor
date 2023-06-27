@@ -4,15 +4,14 @@
 @using Microsoft.AspNetCore.Components
 @implements IDisposable
 
-<MudGrid Class="animate__animated animate__fadeIn ">
-    <MudItem xs="12" sm="7">
-        <MudPaper Class="pa-4 border visibility">
-            <MudForm @ref="@form">
 
-                <MudCardContent >
+
+
+<MudForm  @ref="@form" Style="overflow: hidden">
+
+            
 
                     <MudSelect @bind-Value="LocalThemeDto.NavBorderType" Label="Nav Border Type" AnchorOrigin="Origin.BottomCenter">
-                        <MudSelectItem Value="NavBorderType.None"/>
                         <MudSelectItem Value="NavBorderType.Neon"/>
                         <MudSelectItem Value="NavBorderType.DarkNeon"/>
                         <MudSelectItem Value="NavBorderType.LightNeon"/>
@@ -21,44 +20,34 @@
                     </MudSelect>
 
                     <MudSelect @bind-Value="LocalThemeDto.BackgroundType" Label="Background Type" AnchorOrigin="Origin.BottomCenter">
-                        <MudSelectItem Value="BackgroundType.None"/>
                         <MudSelectItem Value="BackgroundType.DarkGradient"/>
                         <MudSelectItem Value="BackgroundType.LightGradient"/>
                         <MudSelectItem Value="BackgroundType.MaterialSvg1"/>
                         <MudSelectItem Value="BackgroundType.MaterialSvg2"/>
                     </MudSelect>
 
-                    <MudSelect @bind-Value="LocalThemeDto.BorderType" Label="Border Type" AnchorOrigin="Origin.BottomCenter">
-                        <MudSelectItem Value="BorderType.None"/>
-                        <MudSelectItem Value="BorderType.Neon"/>
-                        <MudSelectItem Value="BorderType.Dark"/>
-                        <MudSelectItem Value="BorderType.DarkNeon"/>
-                        <MudSelectItem Value="BorderType.Light"/>
-                        <MudSelectItem Value="BorderType.LightNeon"/>
-                    </MudSelect>
+                <MudSelect @bind-Value="LocalThemeDto.BorderType" Label="Border Type" AnchorOrigin="Origin.BottomCenter">
+                    <MudSelectItem Value="BorderType.None"/>
+                    <MudSelectItem Value="BorderType.Neon"/>
+                    <MudSelectItem Value="BorderType.Dark"/>
+                    <MudSelectItem Value="BorderType.DarkNeon"/>
+                    <MudSelectItem Value="BorderType.Light"/>
+                    <MudSelectItem Value="BorderType.LightNeon"/>
+                </MudSelect>
 
-                    <MudSelect @bind-Value="LocalThemeDto.VisibilityType" Label="Visibility Type" AnchorOrigin="Origin.BottomCenter">
-                        <MudSelectItem Value="VisibilityType.Regular"/>
-                        <MudSelectItem Value="VisibilityType.DarkGlasses"/>
-                        <MudSelectItem Value="VisibilityType.LightGlasses"/>
-                    </MudSelect>
+    <div style="margin: 2em" class=" d-flex align-center">
+        <MudButton Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.Save" Color="Color.Info" Size="Size.Small" OnClick="ApplyChanges">apply changes </MudButton>
 
-                </MudCardContent>
+    </div>
 
-                <div class="d-flex align-center justify-space-between">
-
-                    <MudCheckBox @bind-Checked="LocalThemeDto.IsDarkMode" Label="Dark Mode" Color="Color.Primary"></MudCheckBox>
-
-                    <MudCardActions>
-                        <MudButton Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.Save" Color="Color.Info" Size="Size.Small" OnClick="ApplyChanges">apply changes </MudButton>
-                    </MudCardActions>
-
-                </div>
+   
+              
+             
 
             </MudForm>
-        </MudPaper>
-    </MudItem>
-</MudGrid>
+
+
+
 
 @code {
     MudForm? form;

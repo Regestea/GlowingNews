@@ -13,7 +13,7 @@ namespace AWS.Shared.Client.Extensions
         {
             var path = filePath.Split("/");
 
-            return $"https://{path[0]}.s3.ir-thr-at1.arvanstorage.com/{path[1]}";
+            return $"https://{path[0]}.s3.ir-thr-at1.arvanstorage.ir/{path[1]}";
         }
 
         public static MediaType GetMediaType(string fileFormat)

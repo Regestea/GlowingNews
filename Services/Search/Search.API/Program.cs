@@ -23,6 +23,8 @@ builder.Services.AddSingleton<IElasticClient>(new ElasticClient(settings));
 builder.Services.AddMassTransit(config =>
 {
     config.AddConsumer<AddIndexNewsConsumer>();
+    config.AddConsumer<UpdateIndexNewsConsumer>();
+    config.AddConsumer<DeleteIndexNewsConsumer>();
 
     config.UsingRabbitMq((ctx, cfg) =>
     {
@@ -30,16 +32,28 @@ builder.Services.AddMassTransit(config =>
         cfg.ReceiveEndpoint(EventBusConstants.NewsQueue, c =>
         {
             c.ConfigureConsumer<AddIndexNewsConsumer>(ctx);
-            //c.ConfigureConsumer<UpdateIndexNewsConsumer>(ctx);
-            //c.ConfigureConsumer<DeleteIndexNewsConsumer>(ctx);
+            c.ConfigureConsumer<UpdateIndexNewsConsumer>(ctx);
+            c.ConfigureConsumer<DeleteIndexNewsConsumer>(ctx);
         });
     });
 });
 
 builder.Services.AddElasticSearch(builder.Configuration);
 
-var app = builder.Build();
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAllOrigins",
+        builder =>
+        {
+            builder
+                .AllowAnyOrigin()
+                .AllowAnyHeader()
+                .AllowAnyMethod();
+        });
+});
 
+var app = builder.Build();
+app.UseCors("AllowAllOrigins");
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {

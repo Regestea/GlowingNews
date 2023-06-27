@@ -4,12 +4,14 @@ namespace UserAccount.Application.Common.Interfaces
 {
     public interface IFollowRepository
     {
-        Task<List<FollowingDto>?> FollowingList(Guid userId);
+        Task<List<FollowingDto>?> FollowingListAsync(Guid userId);
 
-        Task<List<FollowerDto>?> FollowerList(Guid userId);
+        Task<List<FollowerDto>?> FollowerListAsync(Guid userId);
 
-        Task Follow(Guid followerId, Guid followingId);
+        Task<bool> IsFollowedAsync(Guid userId, Guid targetId);
 
-        Task UnFollow(Guid followerId, Guid followingId);
+        Task FollowAsync(Guid followerId, Guid followingId);
+
+        Task UnFollowAsync(Guid requesterId, Guid targetId);
     }
 }

@@ -3,6 +3,8 @@
 @using Microsoft.AspNetCore.Components.Web
 @using System.Collections.Generic
 @inject IUserService UserService
+@inject ISearchService SearchService
+@inject NavigationManager NavigationManager
 
 <div style="position: relative; margin-left: 10%;">
     <div style="position: fixed; margin: -1em; width: 40%;">
@@ -29,6 +31,21 @@
                 }
             </ul>
         }
+        @if (newsSearchResult.Count >= 1)
+        {
+            <ul class="visibility border" style="overflow: scroll; max-height: 40em; margin-top: 0.5em;">
+                @foreach (var news in newsSearchResult)
+                {
+                    <a style="cursor: pointer;" @onclick="()=>NavigateToNews(news.Id)">
+                <MudCardHeader Style="margin: 0.5em;padding: 1.5em" Class="animate__animated animate__backInRight border">
+                    <CardHeaderContent>
+                        <MudHighlighter Text="@news.Text" HighlightedText="@searchTerm" />
+                    </CardHeaderContent>
+                </MudCardHeader>
+                    </a>
+                }
+            </ul>
+        }
      
     </div>
 </div>
@@ -36,22 +53,37 @@
 @code {
     private string searchTerm = "";
     private List<UserSearchDto> userSearchResult=new ();
+    private List<NewsSearch> newsSearchResult=new ();
+
    
 
     private async Task HandleInput(ChangeEventArgs e)
     {
         searchTerm = e.Value.ToString();
         Console.WriteLine(searchTerm);
+        
         if (searchTerm.StartsWith("@")&&searchTerm.Length>=2)
         {
             var result= await UserService.SearchUser(searchTerm.Replace("@", ""));
             userSearchResult = result.AsT0.Value;
         }
+        else if (searchTerm.Length>=2)
+        {
+            var result=await SearchService.SearchNews(searchTerm.Replace("#","%23"));
+            newsSearchResult = result.AsT0.Value;
+        }
         else
         {
             userSearchResult.Clear();
+            newsSearchResult.Clear();
         }
     }
 
-    
+    private async Task NavigateToNews(Guid newsId)
+    {
+        NavigationManager.NavigateTo($"/News/{newsId}");
+        newsSearchResult.Clear();
+    }
+
+
 }

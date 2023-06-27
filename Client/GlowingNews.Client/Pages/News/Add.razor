@@ -1,0 +1,176 @@
+﻿@page "/News/Add"
+@using GlowingNews.Client.Models.File
+@using GlowingNews.Client.DTOs.Response
+@using GlowingNews.Client.Models.News
+@using GlowingNews.Client.responses.Base
+@using Microsoft.AspNetCore.Authorization
+@inject IUploadService UploadService
+@inject NavigationManager NavigationManager
+@inject INewsService NewsService
+@attribute [Authorize(Roles = "User,Admin")]
+
+<MudGrid Class="visibility border animate__animated animate__fadeIn">
+    <MudItem Class="d-flex flex-column align-center pa-6 " Style="margin: 1em" xs="5">
+
+        @if (IsVideoFile != null)
+        {
+            if (IsVideoFile == true)
+            {
+                <video @ref="videoElement" width="400px" height="300px" controls>
+                    <source src="video/video.mp4" type="video/mp4">
+                    Error Message
+                </video>
+            }
+            else
+            {
+                <MudImage ObjectFit="ObjectFit.Cover" Style="max-width: 100%;max-height: 100%" Src="@ImageUrl" Elevation="25" Class="rounded-lg " />
+            }
+
+        }
+        else
+        {
+            <MudImage ObjectFit="ObjectFit.Cover" Style="max-width: 100%;max-height: 100%" Src="images/FilePlace.jpg" Elevation="25" Class="rounded-lg" />
+        }
+
+
+        <MudProgressLinear Color="Color.Success" Value="@progress.Percentage" Class="my-7" />
+
+        <MudSpacer />
+
+        <MudFileUpload T="IBrowserFile" FilesChanged="UploadImage">
+            <ButtonTemplate>
+                <MudFab HtmlTag="label"
+                        Color="Color.Secondary"
+                        Icon="@Icons.Material.Filled.Image"
+                        Label="Change Profile Image"
+                        for="@context" />
+            </ButtonTemplate>
+
+        </MudFileUpload>
+    </MudItem>
+
+    <MudItem xs="6">
+        <MudCardContent>
+            <MudText Typo="Typo.h5">What's your news</MudText>
+            <MudTextField @bind-Value="AddNewsModel.Text" T="string" Label="News" Variant="Variant.Outlined" Placeholder="write your news" Text="this is a test" Lines="7" />
+        </MudCardContent>
+    </MudItem>
+    <MudItem Class="d-flex flex-column pa-6" xs="6">
+
+    </MudItem>
+    <MudItem Class="d-flex flex-column pa-6" xs="3">
+        <MudButton Disabled="disableButton" Class="ma-4" Variant="Variant.Filled" StartIcon="@Icons.Material.Outlined.Delete" Color="Color.Error">Discard Changes</MudButton>
+    </MudItem>
+    <MudItem Class="d-flex flex-column pa-6" xs="3">
+        <MudButton Disabled="disableButton" @onclick="Save" Class="ma-4" Variant="Variant.Filled" StartIcon="@Icons.Material.Outlined.Save" Color="Color.Success">Save</MudButton>
+    </MudItem>
+</MudGrid>
+
+
+@code {
+    private ElementReference videoElement;
+    private bool disableButton = false;
+    private AddNewsModel AddNewsModel = new();
+    [Inject]
+    private IJSRuntime JSRuntime { get; set; }
+    private UploadPercentageDto progress = new UploadPercentageDto()
+        {
+            Percentage = 0,
+            Uploaded = 0
+        };
+
+    private bool? IsVideoFile;
+    private string? ImageUrl = null;
+
+    private async Task Save()
+    {
+        var response = await NewsService.AddNews(AddNewsModel);
+
+        if (response.IsT0)
+        {
+            NavigationManager.NavigateTo("/UserAccount");
+        }
+    }
+
+    private async Task PreviewFile(IBrowserFile file)
+    {
+        if (file.ContentType.StartsWith("image"))
+        {
+            await LoadImage(file);
+            IsVideoFile = false;
+            StateHasChanged();
+        }
+        if (file.ContentType.StartsWith("video"))
+        {
+            IsVideoFile = true;
+            await LoadVideo(file);
+        }
+        else
+        {
+            IsVideoFile = null;
+        }
+    }
+
+    private async Task LoadImage(IBrowserFile file)
+    {
+        var image = await file.RequestImageFileAsync("image/png,image/gif,image/jpg,image/jpeg,", 1920, 1080);
+
+        using Stream imageStream = image.OpenReadStream(1024 * 1024 * 15);
+
+        using MemoryStream ms = new();
+        //copy imageStream to Memory stream
+        await imageStream.CopyToAsync(ms);
+
+        //convert stream to base64
+        ImageUrl = $"data:{file.ContentType};base64,{Convert.ToBase64String(ms.ToArray())}";
+    }
+
+
+    private async Task LoadVideo(IBrowserFile file)
+    {
+        var buffer = new byte[file.Size];
+        await file.OpenReadStream(1024 * 1024 * 100).ReadAsync(buffer);
+        var base64 = Convert.ToBase64String(buffer);
+        var url = $"data:{file.ContentType};base64,{base64}";
+
+        // Set the URL as the source of a video element
+        await JSRuntime.InvokeVoidAsync("setVideoSrc", videoElement, url);
+
+        // Wait for the video to load
+        await JSRuntime.InvokeVoidAsync("loadVideo", videoElement);
+    }
+
+
+
+    private async void UploadImage(IBrowserFile file)
+    {
+        await PreviewFile(file);
+        CreateResponse<JwtToken> response=null;
+        disableButton = true;
+
+        if (file.ContentType.StartsWith("image"))
+        {
+            IsVideoFile = false;
+            response = await UploadService.NewsImage(new ImageUploadModel() { Image = file }, onProgress =>
+           {
+               progress = onProgress;
+               StateHasChanged();
+           });
+        }
+        if (file.ContentType.StartsWith("video"))
+        {
+            IsVideoFile = true;
+            response = await UploadService.NewsVideo(new VideoUploadModel() { Video = file }, onProgress =>
+             {
+                 progress = onProgress;
+                 StateHasChanged();
+             });
+        }
+        if (response is {IsT0: true })
+        {
+            disableButton = false;
+            StateHasChanged();
+            AddNewsModel.MediaToken = response.AsT0.Value.Token;
+        }
+    }
+}

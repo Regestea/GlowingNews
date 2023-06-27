@@ -1,0 +1,61 @@
+﻿@page "/News"
+@inject INewsService NewsService
+@inject AuthStateProvider AuthStateProvider
+@inject NavigationManager NavigationManager
+@attribute [Authorize(Roles = "User,Admin")]
+
+@if (NewsList != null)
+{
+    @foreach (var news in NewsList)
+    {
+        <MudGrid Class="visibility border animate__animated animate__fadeIn" Style="margin: 2em;">
+            <MudItem Class="d-flex flex-column align-center pa-6 " Style="margin: 1em" xs="5">
+                <NewsMedia MediaType="@news.MediaType" MediaUrl="@news.MediaPath"/>
+            </MudItem>
+
+            <MudItem xs="6">
+                <MudCardContent>
+                    <MudText Typo="Typo.h6" >@news.Text</MudText>
+                </MudCardContent>
+            </MudItem>
+
+            <MudButton @onclick="()=>Delete(news.Id)" Style="width: 48%;margin: 0.8em" Size="Size.Large" Variant="Variant.Filled" StartIcon="@Icons.Material.Outlined.Edit" Color="Color.Secondary">Delete</MudButton>
+            <MudButton @onclick="()=>Edit(news.Id)" Style="width: 48%;margin: 0.8em" Size="Size.Large" Variant="Variant.Filled" StartIcon="@Icons.Material.Outlined.Save" Color="Color.Tertiary">Edit</MudButton>
+
+        </MudGrid>
+    }
+}
+
+@code {
+    private List<News>? NewsList = null; 
+
+    protected override async Task OnInitializedAsync()
+    {
+        var userData = await AuthStateProvider.ExtractUserDataFromLocalToken();
+
+        var newsListResponse = await NewsService.GetNewsList(userData.Id);
+
+        if (newsListResponse.IsT0)
+        {
+            if (newsListResponse.AsT0.Value.Any())
+            {
+                NewsList = newsListResponse.AsT0.Value;
+            }
+        }
+    }
+
+    private void Edit(Guid id)
+    {
+        NavigationManager.NavigateTo($"/News/Edit/{id}");
+    }
+
+    private async Task Delete(Guid id)
+    {
+        await NewsService.DeleteNews(id);
+
+        var news=NewsList.SingleOrDefault(x => x.Id == id);
+        NewsList.Remove(news);
+    }
+
+
+}

@@ -18,9 +18,9 @@ namespace GlowingNews.API.Controllers
     [ApiController]
     public class NewsController : ControllerBase
     {
-        private INewsRepository _newsRepository;
-        private IJwtTokenRepository _jwtTokenRepository;
-        private AwsGrpcService _awsGrpcService;
+        private readonly INewsRepository _newsRepository;
+        private readonly IJwtTokenRepository _jwtTokenRepository;
+        private readonly AwsGrpcService _awsGrpcService;
         private readonly IPublishEndpoint _publishEndpoint;
 
         public NewsController(INewsRepository newsRepository, IJwtTokenRepository jwtTokenRepository, AwsGrpcService awsGrpcService, IPublishEndpoint publishEndpoint)
@@ -36,13 +36,31 @@ namespace GlowingNews.API.Controllers
         /// </summary>
         /// <response code="200">Success: Single news</response>
         /// <response code="404">NotFound: User don't have any news</response>
+        [ProducesResponseType(typeof(List<NewsDailyDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [AuthorizeByIdentityServer(Roles.User + "|" + Roles.Admin)]
+        [HttpGet("Daily/List")]
+        public async Task<IActionResult> GetDailyNewsList(List<Guid> followingIdList)
+        {
+            var news = await _newsRepository.DailyNewsListAsync(followingIdList);
+
+            return Ok(news);
+        }
+
+        /// <summary>
+        /// Get last user news
+        /// </summary>
+        /// <response code="200">Success: Single news</response>
+        /// <response code="404">NotFound: User don't have any news</response>
         [ProducesResponseType(typeof(NewsDto), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [AuthorizeByIdentityServer(Roles.User + "|" + Roles.Admin)]
-        [HttpGet("{userId}")]
-        public async Task<IActionResult> GetLastUserNews(Guid userId)
+        [HttpGet("{newsId}")]
+        public async Task<IActionResult> GetNews(Guid newsId)
         {
-            var news = await _newsRepository.LastNewsAsync(userId);
+
+            var news = await _newsRepository.GetNewsAsync(newsId);
+
             if (news != null)
             {
                 return Ok(news);
@@ -66,8 +84,6 @@ namespace GlowingNews.API.Controllers
 
             if (newsList != null)
             {
-                
-
                 return Ok(newsList);
             }
 
@@ -78,7 +94,7 @@ namespace GlowingNews.API.Controllers
         /// Add news
         /// </summary>
         /// <response code="200">Success: News id</response>
-        [ProducesResponseType(typeof(Guid), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(IdResultDto), StatusCodes.Status200OK)]
         [AuthorizeByIdentityServer(Roles.User + "|" + Roles.Admin)]
         [HttpPost]
         public async Task<IActionResult> AddNews(AddNewsModel addNewsModel)
@@ -98,7 +114,7 @@ namespace GlowingNews.API.Controllers
                 var newsFileDetail = await _awsGrpcService.GetObjectPathAsync(userDto.Id, addNewsModel.MediaToken);
                 if (!string.IsNullOrEmpty(newsFileDetail.FilePath))
                 {
-                    addNewsDto.MediaPath = AwsFile.GetUrl(newsFileDetail.FilePath);
+                    addNewsDto.MediaPath = newsFileDetail.FilePath;
                     addNewsDto.MediaType = (MediaTypeDto)AwsFile.GetMediaType(newsFileDetail.FileFormat);
                 }
             }
@@ -111,7 +127,7 @@ namespace GlowingNews.API.Controllers
                 Text = addNewsModel.Text
             });
 
-            return Ok(newsId);
+            return Ok(new IdResultDto() { Id = newsId });
         }
 
         /// <summary>
@@ -125,6 +141,7 @@ namespace GlowingNews.API.Controllers
         [HttpPatch("{newsId}")]
         public async Task<IActionResult> EditNews([FromRoute] Guid newsId, EditNewsModel editNewsModel)
         {
+            Console.WriteLine(editNewsModel.Text);
             var jwtToken = _jwtTokenRepository.GetJwtToken();
             var userDto = _jwtTokenRepository.ExtractUserDataFromToken(jwtToken);
 

@@ -10,7 +10,9 @@ namespace GlowingNews.Application.Common.Interfaces
 {
     public interface INewsRepository
     {
-        Task<NewsDto?> LastNewsAsync(Guid userId);
+        Task<List<NewsDailyDto>?> DailyNewsListAsync(List<Guid> userIdList);
+
+        Task<NewsDto?> GetNewsAsync(Guid newsId);
 
         Task<List<NewsDto>?> NewsListAsync(Guid userId);
 

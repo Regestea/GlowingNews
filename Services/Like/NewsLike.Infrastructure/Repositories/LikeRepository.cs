@@ -37,20 +37,23 @@ namespace NewsLike.Infrastructure.Repositories
             return likeDto;
         }
 
-        public async Task<Guid> AddLikeAsync(Guid userId, Guid newsId)
+        public async Task AddLikeAsync(Guid userId, Guid newsId)
         {
-            var like = new Like()
+            bool alreadyLiked =await _likeContext.Likes.AnyAsync(x => x.UserId == userId && x.NewsId == newsId);
+
+            if (!alreadyLiked)
             {
-                Id = Guid.NewGuid(),
-                UserId = userId,
-                NewsId = newsId,
-                CreatedDate = DateTimeOffset.UtcNow
-            };
-            await _likeContext.Likes.AddAsync(like);
+                var like = new Like()
+                {
+                    Id = Guid.NewGuid(),
+                    UserId = userId,
+                    NewsId = newsId,
+                    CreatedDate = DateTimeOffset.UtcNow
+                };
+                await _likeContext.Likes.AddAsync(like);
 
-            await _likeContext.SaveChangesAsync();
-
-            return like.Id;
+                await _likeContext.SaveChangesAsync();
+            }
         }
 
         public async Task DeleteLikeAsync(Guid userId, Guid newsId)

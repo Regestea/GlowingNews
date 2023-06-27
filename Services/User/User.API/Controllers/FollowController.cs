@@ -24,17 +24,16 @@ namespace UserAccount.API.Controllers
         [HttpGet("{userId}/FollowingList")]
         public async Task<IActionResult> FollowingList([FromRoute] Guid userId)
         {
-            var followingList = await _followRepository.FollowingList(userId);
+            var followingList = await _followRepository.FollowingListAsync(userId);
 
             return Ok(followingList);
         }
 
-        //user can search and pageing
         [AuthorizeByIdentityServer(Roles.User + "|" + Roles.Admin)]
         [HttpGet("{userId}/FollowerList")]
         public async Task<IActionResult> FollowerList([FromRoute] Guid userId)
         {
-            var followerList = await _followRepository.FollowerList(userId);
+            var followerList = await _followRepository.FollowerListAsync(userId);
 
             return Ok(followerList);
         }
@@ -45,7 +44,7 @@ namespace UserAccount.API.Controllers
         {
             var jwtToken = _jwtTokenRepository.GetJwtToken();
             var userDto = _jwtTokenRepository.ExtractUserDataFromToken(jwtToken);
-            await _followRepository.Follow(userDto.Id, followingId);
+            await _followRepository.FollowAsync(userDto.Id, followingId);
             return NoContent();
         }
 
@@ -56,8 +55,20 @@ namespace UserAccount.API.Controllers
             var jwtToken = _jwtTokenRepository.GetJwtToken();
             var userDto = _jwtTokenRepository.ExtractUserDataFromToken(jwtToken);
 
-            await _followRepository.UnFollow(userDto.Id, unFollowId);
+            await _followRepository.UnFollowAsync(userDto.Id, unFollowId);
             return NoContent();
+        }
+
+        [AuthorizeByIdentityServer(Roles.User + "|" + Roles.Admin)]
+        [HttpGet("IsFollowed/{userId}")]
+        public async Task<IActionResult> IsFollowed([FromRoute] Guid userId)
+        {
+            var jwtToken = _jwtTokenRepository.GetJwtToken();
+            var userDto = _jwtTokenRepository.ExtractUserDataFromToken(jwtToken);
+
+            bool isFollowed = await _followRepository.IsFollowedAsync(userDto.Id, userId);
+
+            return Ok(isFollowed);
         }
     }
 }

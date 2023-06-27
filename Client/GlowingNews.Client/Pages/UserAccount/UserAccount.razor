@@ -1,13 +1,13 @@
 ﻿@page "/UserAccount"
-
 @inject IFollowService FollowService
 @inject AuthStateProvider AuthStateProvider
 @inject IUserService UserService
+@attribute [Authorize(Roles = "User,Admin")]
 
-<MudGrid Class="animate__animated animate__fadeIn">
+<MudGrid >
     <MudItem xs="8">
 
-        <MudCard Class="animate__animated animate__fadeIn visibility border d-flex flex-column align-center pa-6 ">
+        <MudCard Class=" animate__animated animate__fadeIn d-flex flex-column align-center pa-6 visibility border">
             @if (user != null)
             {
                 <div class="animate__animated animate__fadeIn">
@@ -27,10 +27,7 @@
                     }
 
                 </MudCardContent>
-                <MudCardActions>
-                    <MudLink Href="/UserAccount/Detail/Edit" Class="ma-4" Variant="Variant.Filled" StartIcon="@Icons.Material.Outlined.Edit" Color="Color.Info">Edit details </MudLink>
-                    <MudLink Href="/UserAccount/Detail/Edit" Class="ma-4" Variant="Variant.Filled" StartIcon="@Icons.Material.Outlined.Edit" Color="Color.Info">My News </MudLink>
-                </MudCardActions>
+                
             }
             else
             {
@@ -47,7 +44,7 @@
         <MudTabs Elevation="4" Rounded="true" Centered="true" Color="@Color.Primary">
             <MudTabPanel Text="Followings">
 
-                <div Style="overflow: scroll; height: 35em">
+                <div Style="overflow-y: scroll;overflow-x:hidden ; height: 35em">
 
                     @if (FollowingLoading)
                     {

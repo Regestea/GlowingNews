@@ -31,9 +31,7 @@ namespace NewsLike.API.Controllers
         /// Like a news
         /// </summary>
         /// <response code="204">NoContent</response>
-        /// <response code="400">BadRequest: the news already liked by this user</response>
         [ProducesResponseType(StatusCodes.Status204NoContent)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [AuthorizeByIdentityServer(Roles.User + "|" + Roles.Admin)]
         [HttpPost("{newsId}")]
         public async Task<IActionResult> LikeNews([FromRoute] Guid newsId)
@@ -41,15 +39,9 @@ namespace NewsLike.API.Controllers
             var jwtToken = _jwtTokenRepository.GetJwtToken();
             var userDto = _jwtTokenRepository.ExtractUserDataFromToken(jwtToken);
 
-            var isLikedAlready = await _mediator.Send(new CreateLikeCommand() { UserId = userDto.Id, NewsId = newsId });
-            if (isLikedAlready == false)
-            {
-                await _mediator.Send(new CreateLikeCommand() { UserId = userDto.Id, NewsId = newsId });
-
-                return NoContent();
-            }
-
-            return BadRequest("the news already liked by this user");
+            await _mediator.Send(new CreateLikeCommand() { UserId = userDto.Id, NewsId = newsId });
+            
+            return NoContent();
         }
 
 
@@ -92,7 +84,7 @@ namespace NewsLike.API.Controllers
         /// <response code="200">Success: User liked news list</response>
         [ProducesResponseType(typeof(List<LikeDto>), StatusCodes.Status200OK)]
         [AuthorizeByIdentityServer(Roles.User + "|" + Roles.Admin)]
-        [HttpGet("/UserLikes")]
+        [HttpGet("List")]
         public async Task<IActionResult> UserLikedNewsList()
         {
             var jwtToken = _jwtTokenRepository.GetJwtToken();

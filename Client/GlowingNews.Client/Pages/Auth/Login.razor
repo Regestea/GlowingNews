@@ -1,7 +1,5 @@
 ﻿@page "/Login"
 @using GlowingNews.Client.Models.Auth
-@using GlowingNews.Client.Services.Interfaces
-@using GlowingNews.Client.Auth
 @inject IAuthService AuthService
 @inject Blazored.LocalStorage.ILocalStorageService LocalStorage
 @inject NavigationManager NavigationManager;
@@ -9,9 +7,9 @@
 
 <EditForm EditContext="editContext" OnValidSubmit="OnValidSubmit">
     <DataAnnotationsValidator/>
-    <MudGrid Class="animate__animated animate__fadeIn ">
+    <MudGrid >
         <MudItem xs="12" sm="7">
-            <MudCard Class="visibility border">
+            <MudCard Class="animate__animated animate__fadeIn visibility border">
                 <MudChip Text="pink" Variant="Variant.Text" Color="Color.Secondary">Login</MudChip>
                 <MudCardContent>
                     <MudTextField @onfocusout="ClearErrors" Label="Email" HelperText="Max. 50 characters"
@@ -35,23 +33,6 @@
 
 </EditForm>
 
-<AuthorizeView>
-    <Authorized>
-        <!-- Content to display for authenticated users -->
-        <h1>
-            Welcome,
-            @if (context.User.Identity != null)
-            {
-                @context.User.Identity.Name
-            }
-            !
-        </h1>
-    </Authorized>
-    <NotAuthorized>
-        <!-- Content to display for unauthenticated users -->
-        <h1>Please log in to access this content.</h1>
-    </NotAuthorized>
-</AuthorizeView>
 
 @code {
     private EditContext? editContext;
@@ -64,13 +45,6 @@
         messageStore = new(editContext);
     }
 
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        var userData = await AuthStateProvider.ExtractUserDataFromLocalToken();
-        Console.WriteLine(userData.Email);
-        Console.WriteLine(userData.Id);
-        Console.WriteLine(userData.Name);
-    }
 
     private void ClearErrors()
     {
@@ -95,9 +69,8 @@
     //success login set token redirect to home hide login and register link and show logout
         if (result.IsT0)
         {
-            Console.WriteLine(result.AsT0.Value.Token);
             await LocalStorage.SetItemAsStringAsync("authToken", result.AsT0.Value.Token);
-            NavigationManager.NavigateTo("/");
+            NavigationManager.NavigateTo("/",true);
         }
 
     //user not found

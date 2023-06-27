@@ -1,0 +1,30 @@
+﻿<MudGrid>
+    <MudItem xs="8">
+        <MudCard Class=" animate__animated animate__fadeIn d-flex flex-column align-center pa-6 visibility border">
+            <div class="animate__animated animate__fadeIn">
+                <MudImage Src="/gif/login-animate.gif" Width="332" Height="265" Alt="Login or signup" Elevation="25" Class="rounded-lg ma-4 visibility border" />
+            </div>
+            <MudText Typo="Typo.h5"> Please Login or SignUp</MudText>
+
+            <MudCardContent Class="animate__animated animate__fadeIn d-flex align-center ma-4">
+             <MudButton Style="margin: 2em" Href="/Login"
+                                                   Variant="Variant.Outlined"
+                                                   EndIcon="@Icons.Material.Outlined.Login"
+                                                   Color="Color.Tertiary">
+                    Login
+                </MudButton>
+                <MudButton Style="margin: 2em" Href="/Register"
+                                                   Variant="Variant.Outlined"
+                                                   EndIcon="@Icons.Material.Outlined.AppRegistration"
+                                                   Color="Color.Info">
+                    SignUp
+                </MudButton>
+              
+            </MudCardContent>
+        </MudCard>
+    </MudItem>
+</MudGrid>
+
+@code {
+
+}
