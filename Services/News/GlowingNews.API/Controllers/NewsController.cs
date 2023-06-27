@@ -39,8 +39,8 @@ namespace GlowingNews.API.Controllers
         [ProducesResponseType(typeof(List<NewsDailyDto>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [AuthorizeByIdentityServer(Roles.User + "|" + Roles.Admin)]
-        [HttpGet("Daily/List")]
-        public async Task<IActionResult> GetDailyNewsList(List<Guid> followingIdList)
+        [HttpGet("Daily/List/")]
+        public async Task<IActionResult> GetDailyNewsList([FromQuery]List<Guid> followingIdList)
         {
             var news = await _newsRepository.DailyNewsListAsync(followingIdList);
 

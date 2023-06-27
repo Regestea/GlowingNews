@@ -97,22 +97,23 @@ namespace GlowingNews.Client.Services
             return new NotFound();
         }
 
-        public async Task<ReadResponse<List<NewsDaily>>> GetDailyNewsList(List<Guid> followingIdList)
+        public async Task<ReadResponse<List<NewsDaily>?>> GetDailyNewsList(List<Guid> followingIdList)
         {
+
             await _httpClient.AddAuthHeader(_localStorageService);
 
-            var requestStringContent = await JsonConverter.ToStringContent(followingIdList);
+            var queryString = string.Join("&", followingIdList.Select(id => $"followingIdList={id}"));
+            var url = $"News/Daily/List/?{queryString}";
 
-            var response = await _httpClient.SendRequestAsync("News/Daily/List", HttpMethod.Get, requestStringContent);
+            var response = await _httpClient.SendRequestAsync(url, HttpMethod.Get);
 
             if (response.StatusCode == HttpStatusCode.OK)
             {
-                var news = await JsonConverter.ToObject<List<NewsDaily>>(response.Content);
-
-                return new Success<List<NewsDaily>>(news);
+                var news = await JsonConverter.ToObject<List<NewsDaily>?>(response.Content);
+                return new Success<List<NewsDaily>?>(news);
             }
 
-            return new Success<List<NewsDaily>>(new List<NewsDaily>());
+            return new Success<List<NewsDaily>?>(new List<NewsDaily>());
         }
     }
 }

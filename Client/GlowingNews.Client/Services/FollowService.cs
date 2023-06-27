@@ -48,26 +48,27 @@ namespace GlowingNews.Client.Services
             return new Success<bool>(isFollowed);
         }
 
-        public async Task<ReadResponse<List<Following>>> GetFollowingList(Guid userId)
+        public async Task<ReadResponse<List<Following>?>> GetFollowingList(Guid userId)
         {
             await _httpClient.AddAuthHeader(_localStorageService);
 
             var response = await _httpClient.SendRequestAsync($"Follow/{userId}/FollowingList", HttpMethod.Get);
 
-            var followingList = await JsonConverter.ToObject<List<Following>>(response.Content);
+         
+            var followingList = await JsonConverter.ToObject<List<Following>?>(response.Content);
 
-            return new Success<List<Following>>(followingList);
+            return new Success<List<Following>?>(followingList);
         }
 
-        public async Task<ReadResponse<List<Follower>>> GetFollowerList(Guid userId)
+        public async Task<ReadResponse<List<Follower>?>> GetFollowerList(Guid userId)
         {
             await _httpClient.AddAuthHeader(_localStorageService);
 
             var response = await _httpClient.SendRequestAsync($"Follow/{userId}/FollowerList", HttpMethod.Get);
 
-            var followingList = await JsonConverter.ToObject<List<Follower>>(response.Content);
+            var followingList = await JsonConverter.ToObject<List<Follower>?>(response.Content);
 
-            return new Success<List<Follower>>(followingList);
+            return new Success<List<Follower>?>(followingList);
         }
     }
 }

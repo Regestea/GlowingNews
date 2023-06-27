@@ -12,10 +12,10 @@
         <input placeholder="Serch 🔎" class="visibility border" style="padding: 8px; width: 100%; margin-top: -6em; color: dodgerblue; " type="text" @bind-value="searchTerm" @oninput="HandleInput"/>
         @if (userSearchResult.Count >=1)
         {
-            <ul class="visibility border" style="overflow: scroll; max-height: 40em; margin-top: 0.5em;">
+            <ul class="visibility border" style="overflow: hidden; max-height: 40em; margin-top: 0.5em;">
                 @foreach (var user in userSearchResult)
                 {
-                    <MudCardHeader Style="margin: 0.5em;padding: 1.5em" Class="animate__animated animate__backInRight">
+                    <MudCardHeader Style="margin: 0.5em;padding: 1.5em" Class="animate__animated animate__backInRight visibility">
                         <CardHeaderAvatar>
                             <UserAvatar ImageUrl="@user.Image" Letter="@user.Name.Substring(0, 1).ToUpper()" />
                         </CardHeaderAvatar>
@@ -33,11 +33,11 @@
         }
         @if (newsSearchResult.Count >= 1)
         {
-            <ul class="visibility border" style="overflow: scroll; max-height: 40em; margin-top: 0.5em;">
+            <ul class="visibility" style="overflow: hidden; max-height: 40em; margin-top: 0.5em;">
                 @foreach (var news in newsSearchResult)
                 {
                     <a style="cursor: pointer;" @onclick="()=>NavigateToNews(news.Id)">
-                <MudCardHeader Style="margin: 0.5em;padding: 1.5em" Class="animate__animated animate__backInRight border">
+                <MudCardHeader Style="margin: 0.5em;padding: 1.5em" Class="animate__animated animate__backInRight visibility">
                     <CardHeaderContent>
                         <MudHighlighter Text="@news.Text" HighlightedText="@searchTerm" />
                     </CardHeaderContent>

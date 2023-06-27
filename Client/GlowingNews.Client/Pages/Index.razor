@@ -38,29 +38,35 @@
     private IJSRuntime JSRuntime { get; set; }
 
     private bool showLoading = false;
-
-    private List<NewsDaily>? NewsDailyList=new List<NewsDaily>()
-    {
-        new NewsDaily() {Id = Guid.Parse("1677ec0e-a9a0-4807-bacd-ca843936117d")},
-        new NewsDaily() {Id = Guid.Parse("1b5a3c0b-394c-423a-a261-5a6f876fc98e")},
-        new NewsDaily() {Id = Guid.Parse("22571e8f-b7ab-4105-863a-2b69b4ac6837")},
-        new NewsDaily() {Id = Guid.Parse("5eaca31e-fe24-4455-af07-603bfbe8f539")},
-
-    };
-
+    private List<NewsDaily>? NewsDailyList = new();
     private Guid? NewsShowId;
 
     protected override async Task OnInitializedAsync()
     {
-        // var userData = await AuthStateProvider.ExtractUserDataFromLocalToken();
+        var userData = await AuthStateProvider.ExtractUserDataFromLocalToken();
+       
+        var followingListResponse = await FollowService.GetFollowingList(userData.Id);
+        if (followingListResponse.AsT0.Value is { Count: >= 1 })
+        {
+            var followingListId = followingListResponse.AsT0.Value.Select(x => x.UserId).ToList();
+            var newsIdListResponse = await NewsService.GetDailyNewsList(followingListId);
 
-        // var followingList=await FollowService.GetFollowingList(userData.Id);
-        // var followingListId = followingList.AsT0.Value.Select(x => x.UserId).ToList();
-        // var newsIdListResponse = await NewsService.GetDailyNewsList(followingListId);
+            Console.WriteLine("#######################");
+            foreach (var newsDaily in newsIdListResponse.AsT0.Value)
+            {
+                Console.WriteLine(newsDaily.Id);
+            }
+            Console.WriteLine("#######################");
+            if (newsIdListResponse.AsT0.Value is { Count: >= 1 })
+            {
+                Console.WriteLine("newsIdListResponse");
+                NewsDailyList = newsIdListResponse.AsT0.Value;
+            }
+            
+        }
+      
 
-        // NewsDailyList = newsIdListResponse.AsT0.Value;
-
-        if (NewsDailyList.Count>=1)
+        if (NewsDailyList?.Count>=1)
         {
             NewsShowId = NewsDailyList.First().Id;
         }

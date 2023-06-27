@@ -4,6 +4,7 @@ using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
+using AWS.Shared.Client.Extensions;
 using Microsoft.EntityFrameworkCore;
 using UserAccount.Application.Common.Interfaces;
 using UserAccount.Application.DTOs;
@@ -32,7 +33,7 @@ namespace UserAccount.Infrastructure.Repositories
                     Id = x.Id,
                     UserId = x.FollowingId,
                     UserName = x.Following.Name,
-                    UserImage = x.Following.Image
+                    UserImage = string.IsNullOrWhiteSpace(x.Following.Image) ? "" : AwsFile.GetUrl(x.Following.Image)
                 })
                 .ToListAsync();
 
@@ -49,7 +50,7 @@ namespace UserAccount.Infrastructure.Repositories
                     Id = x.Id,
                     UserId = x.FollowerId,
                     UserName = x.Follower.Name,
-                    UserImage = x.Follower.Image
+                    UserImage = string.IsNullOrWhiteSpace(x.Follower.Image) ? "" : AwsFile.GetUrl(x.Follower.Image)
                 })
                 .AsSplitQuery()
                 .ToListAsync();

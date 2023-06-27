@@ -61,7 +61,7 @@
                         {
                             <MudCardHeader Class="animate__animated animate__backInRight" Style="@AnimationDelay(Followings.IndexOf(Following))">
                                 <CardHeaderAvatar>
-                                    <UserAvatar Letter="@Following.UserName.Substring(0,1).ToUpper()" />
+                                    <UserAvatar ImageUrl="@Following.UserImage" Letter="@user.Name.Substring(0, 1).ToUpper()" />
                                 </CardHeaderAvatar>
                                 <CardHeaderContent>
                                     <MudText Typo="Typo.body1">@Following.UserName</MudText>
@@ -89,7 +89,7 @@
             </MudTabPanel>
 
             <MudTabPanel Text="Followers">
-
+                <div Style="overflow-y: scroll;overflow-x:hidden ; height: 35em">
                 @if (FollowerLoading)
                 {
                     <MudCardHeader Class=" d-flex flex-column align-center">
@@ -104,7 +104,7 @@
                     {
                         <MudCardHeader Class="animate__animated animate__backInRight" Style="@AnimationDelay(Followers.IndexOf(follower))">
                             <CardHeaderAvatar>
-                                <UserAvatar Letter="@follower.UserName.Substring(0,1).ToUpper()" />
+                                <UserAvatar ImageUrl="@follower.UserImage" Letter="@user.Name.Substring(0, 1).ToUpper()" />
                             </CardHeaderAvatar>
                             <CardHeaderContent>
                                 <MudText Typo="Typo.body1">@follower.UserName</MudText>
@@ -122,7 +122,7 @@
                     </MudCardHeader>
                 }
 
-
+                </div>
             </MudTabPanel>
 
         </MudTabs>
